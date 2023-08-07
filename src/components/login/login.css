@@ -1,0 +1,8 @@
+.login-box{
+    box-shadow: none !important;
+    border: 1px solid rgb(197, 197, 197) !important;
+}
+.error-div{
+color:red !important;
+font-size: 0.8rem;
+}
