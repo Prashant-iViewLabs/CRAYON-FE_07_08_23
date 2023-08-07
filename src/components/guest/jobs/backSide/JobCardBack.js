@@ -22,7 +22,8 @@ import CustomCard from "../../../common/CustomCard";
 import PlaceIcon from "@mui/icons-material/Place";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import { convertDatetimeAgo } from "../../../../utils/DateTime";
+
+import { convertDatetimeAgo,dateConverterMonth } from "../../../../utils/DateTime";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setAlert } from "../../../../redux/configSlice";
@@ -37,6 +38,9 @@ import profile_character from "../../../../assets/Profile Icons_Charater.svg";
 import profile_collaborator from "../../../../assets/Profile Icons_Collaborator.svg";
 import profile_contemplator from "../../../../assets/Profile Icons_Contemplator.svg";
 import JobsDetailPage from "../JobsDetailPage";
+
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 
 const JobCardFront = ({
@@ -362,7 +366,7 @@ const JobCardFront = ({
                   {job?.title}
                 </Typography>
               </Tooltip>
-              <Typography
+              {/* <Typography
                 sx={{
                   fontWeight: 700,
                   fontSize: 12,
@@ -416,7 +420,77 @@ const JobCardFront = ({
                 >
                   {job?.town?.name}, {job?.town?.region?.name}
                 </Typography>
+              </Box> */}
+              <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                marginBottom: "12px",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+                <AccountBalanceWalletIcon fontSize="string"
+                  color="primary" />
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: 12,
+                    letterSpacing: "0.25px",
+                  }}
+                >
+                  {job?.salary?.currency?.symbol}
+                  {formatCurrencyWithCommas(job?.salary?.max)} per month
+                </Typography>
               </Box>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+                <PlaceIcon fontSize="string" color="error" />
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: 12,
+                    letterSpacing: "0.25px",
+                  }}
+                >
+                  {job?.town?.name}, {job?.town?.region?.name}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+                <Box
+                  component="img"
+                  sx={{
+                    height: 16,
+                    width: 16,
+                    maxHeight: { xs: 15 },
+                    maxWidth: { xs: 15 },
+                  }}
+                  alt="job_exp"
+                  src={job_exp}
+                />
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: 12,
+                    letterSpacing: "0.25px",
+                  }}
+                >
+                  {job?.experience?.year} years Experience
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+                <CalendarMonthIcon fontSize="string" color="warning" />
+
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: 12,
+                    letterSpacing: "0.25px",
+                  }}
+                >
+                  {dateConverterMonth(job?.created_at)}
+                </Typography>
+              </Box>
+            </Box>
+
 
               {/* Tags section */}
               <Grid

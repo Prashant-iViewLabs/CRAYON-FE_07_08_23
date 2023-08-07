@@ -476,7 +476,7 @@
 //   );
 // }
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -813,9 +813,33 @@ export default function Jobs() {
   //       }
   //     }
   //   };
+  const gridContainerRef = useRef(null);
+
+  const scrollToGridItem = (item) => {
+    const gridContainer = gridContainerRef.current;
+    const gridItem = document.getElementById(item);
+  
+    if (gridContainer && gridItem) {
+      const gridItemRect = gridItem.getBoundingClientRect();
+      const yOffset = gridItemRect.top + gridItemRect.height / 2 + window.pageYOffset;
+  
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      const scrollToCenter = yOffset - windowHeight / 2;
+  
+      window.scrollTo({
+        top: scrollToCenter,
+        behavior: 'smooth',
+      });
+    }
+  };
 
   const handleExpand = (itemId) => {
-    setExpandedItemId(itemId === expandedItemId ? null : itemId);
+    if(itemId === expandedItemId) {
+      setExpandedItemId(null);
+    } else {
+      setExpandedItemId(itemId);
+      scrollToGridItem(itemId);
+    }
   };
   return (
     <Grid
@@ -871,18 +895,14 @@ export default function Jobs() {
               display: { xs: "none", md: "flex" },
               marginTop: "60px",
             }}
+            ref={gridContainerRef}
           >
             {allJobs.length > 0
               ? allJobs?.map((job) => (
-                <Grid xl={expandedItemId === job.job_id ? 12 : 3}
+                <Grid id={job?.job_id} xl={expandedItemId === job.job_id ? 12 : 3}
                   lg={expandedItemId === job.job_id ? 12 : 4}
                   md={expandedItemId === job.job_id ? 12 : 6}
-                  xs={12} key={job.job_id}
-                  ref={ref => {
-                    if (expandedItemId === job.job_id && ref) {
-                      ref.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                  }}>
+                  xs={12} key={job.job_id}>
                   <JobCard
                     index={job.job_id}
                     job={job}

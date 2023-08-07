@@ -25,7 +25,7 @@ import PlaceIcon from "@mui/icons-material/Place";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import TextWrapper from "../../../common/TextWrapper";
-import { convertDatetimeAgo } from "../../../../utils/DateTime";
+import { convertDatetimeAgo, dateConverterMonth } from "../../../../utils/DateTime";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setAlert } from "../../../../redux/configSlice";
@@ -38,6 +38,8 @@ import KeyboardArrowRightOutlinedIcon from "@mui/icons-material/KeyboardArrowRig
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import JobsDetailPage from "../JobsDetailPage";
+import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
 const label1 = "applied";
 const label2 = "shortlisted";
@@ -154,7 +156,7 @@ const JobCardFront = ({
     >{isExpandedData ? (
       // Render expanded content here
       // You can create a new component or JSX directly
-        <JobsDetailPage id={index} jobDetails={job} setIsExpanded={setIsExpanded} setIsExpandedData={setIsExpandedData} /> 
+      <JobsDetailPage id={index} jobDetails={job} setIsExpanded={setIsExpanded} setIsExpandedData={setIsExpandedData} />
 
     ) : (
       <>
@@ -272,41 +274,41 @@ const JobCardFront = ({
                   <StarRoundedIcon color={isStar ? "error" : "disabled"} />
                 </Button> */}
                 {isStar ? (
-                                <Box
-                                    component="img"
-                                    sx={{
-                                        height: 43,
-                                        width: 50,
-                                        maxHeight: { xs: 43 },
-                                        maxWidth: { xs: 50 },
-                                    }}
-                                    alt="job_star_selected"
-                                    src={job_star_selected}
-                                    onClick={() =>
-                                        decodedToken?.data?.role_id === "undefined"
-                                            ? handleClick
-                                            : handleStar(job?.job_id)
-                                    }
-                                />
-                            ) : (
-                                <Box
-                                    component="img"
-                                    sx={{
-                                        height: 43,
-                                        width: 50,
-                                        maxHeight: { xs: 43 },
-                                        maxWidth: { xs: 50 },
-                                        borderRadius: 0
-                                    }}
-                                    alt="job_star"
-                                    src={job_star}
-                                    onClick={() =>
-                                        decodedToken?.data?.role_id === "undefined"
-                                            ? handleClick
-                                            : handleStar(job?.job_id)
-                                    }
-                                />
-                            )}
+                  <Box
+                    component="img"
+                    sx={{
+                      height: 43,
+                      width: 50,
+                      maxHeight: { xs: 43 },
+                      maxWidth: { xs: 50 },
+                    }}
+                    alt="job_star_selected"
+                    src={job_star_selected}
+                    onClick={() =>
+                      decodedToken?.data?.role_id === "undefined"
+                        ? handleClick
+                        : handleStar(job?.job_id)
+                    }
+                  />
+                ) : (
+                  <Box
+                    component="img"
+                    sx={{
+                      height: 43,
+                      width: 50,
+                      maxHeight: { xs: 43 },
+                      maxWidth: { xs: 50 },
+                      borderRadius: 0
+                    }}
+                    alt="job_star"
+                    src={job_star}
+                    onClick={() =>
+                      decodedToken?.data?.role_id === "undefined"
+                        ? handleClick
+                        : handleStar(job?.job_id)
+                    }
+                  />
+                )}
               </Box>
             </Box>
             <Typography
@@ -359,60 +361,74 @@ const JobCardFront = ({
                 {job?.title}
               </Typography>
             </Tooltip>
-            <Typography
+            <Box
               sx={{
-                fontWeight: 700,
-                fontSize: 12,
-                marginBottom: "4px",
-                letterSpacing: "0.25px",
+                display: "flex",
+                flexDirection: "column",
+                marginBottom: "12px",
               }}
             >
-              {job?.salary?.currency?.symbol}
-              {formatCurrencyWithCommas(job?.salary?.max)} per month
-            </Typography>
-            <Box sx={{ display: "flex", alignItems: "baseline" }}>
-              <Box
-                component="img"
-                sx={{
-                  height: 16,
-                  width: 16,
-                  maxHeight: { xs: 15 },
-                  maxWidth: { xs: 15 },
-                  mr: 1,
-                }}
-                alt="job_exp"
-                src={job_exp}
-              />
-              <Typography
-                sx={{
-                  fontWeight: 700,
-                  fontSize: 12,
-                  letterSpacing: "0.25px",
-                }}
-              >
-                {job?.experience?.year} years Experience
-              </Typography>
-            </Box>
-            <Box
-              sx={{ display: "flex", alignItems: "center", marginBottom: "12px" }}
-            >
-              <IconButton
-                sx={{ padding: 0, marginLeft: "-5px", marginRight: "4px" }}
-                color="redButton100"
-                aria-label="search job"
-                component="button"
-              >
-                <PlaceIcon />
-              </IconButton>
-              <Typography
-                sx={{
-                  fontWeight: 700,
-                  fontSize: 12,
-                  letterSpacing: "0.25px",
-                }}
-              >
-                {job?.town?.name}, {job?.town?.region?.name}
-              </Typography>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+                <AccountBalanceWalletIcon fontSize="string"
+                  color="primary" />
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: 12,
+                    letterSpacing: "0.25px",
+                  }}
+                >
+                  {job?.salary?.currency?.symbol}
+                  {formatCurrencyWithCommas(job?.salary?.max)} per month
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+                <PlaceIcon fontSize="string" color="error" />
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: 12,
+                    letterSpacing: "0.25px",
+                  }}
+                >
+                  {job?.town?.name}, {job?.town?.region?.name}
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+                <Box
+                  component="img"
+                  sx={{
+                    height: 16,
+                    width: 16,
+                    maxHeight: { xs: 15 },
+                    maxWidth: { xs: 15 },
+                  }}
+                  alt="job_exp"
+                  src={job_exp}
+                />
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: 12,
+                    letterSpacing: "0.25px",
+                  }}
+                >
+                  {job?.experience?.year} years Experience
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+                <CalendarMonthIcon fontSize="string" color="warning" />
+
+                <Typography
+                  sx={{
+                    fontWeight: 700,
+                    fontSize: 12,
+                    letterSpacing: "0.25px",
+                  }}
+                >
+                  {dateConverterMonth(job?.created_at)}
+                </Typography>
+              </Box>
             </Box>
             <Box sx={{ mb: 1 }}>
               {personalityArrSlider.map((item, index) => {
@@ -478,6 +494,9 @@ const JobCardFront = ({
             >
               <Box
                 // letterSpacing="0.25px"
+                sx={{
+                  background: "transparent"
+                }}
                 className="preview"
                 m={0}
                 p={0}

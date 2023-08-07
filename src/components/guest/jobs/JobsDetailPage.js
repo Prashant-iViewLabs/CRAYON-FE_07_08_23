@@ -1425,7 +1425,7 @@ export default function JobsDetailPage({id, jobDetails, setIsExpanded, setIsExpa
       __html: DOMPurify.sanitize(html),
     };
   }
-
+  
   return (
     <Grid
       container

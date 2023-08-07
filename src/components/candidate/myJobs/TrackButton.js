@@ -24,7 +24,8 @@ const TrackButton = ({ job }) => {
       <Button
         variant="contained"
         sx={{
-          marginLeft: 1,
+          borderRadius: 0,
+          width: "100%"
         }}
         id="fade-button"
         aria-controls={open ? "fade-menu" : undefined}
@@ -32,6 +33,7 @@ const TrackButton = ({ job }) => {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
         endIcon={<KeyboardArrowDownIcon />}
+        color="grayButton200"
       >
         Track
       </Button>
