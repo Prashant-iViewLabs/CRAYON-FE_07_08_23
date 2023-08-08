@@ -1011,7 +1011,7 @@ export const ADMIN_LFET_PANEL = [
     subTitle: "The nuts and bolts",
     icon: "ShowChartIcon",
     color: "yellowButton300",
-    menuItems: [{ label: "Maintenance item1" }],
+    menuItems: [{ label: "Company", path: "company" }],
   },
 ];
 

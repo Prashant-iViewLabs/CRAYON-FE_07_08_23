@@ -476,7 +476,7 @@
 //   );
 // }
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -521,9 +521,11 @@ export default function Jobs() {
   const [questions, setQuestions] = useState([]);
   const [openApplyJobDialog, setopenApplyJobDialog] = useState(false);
   const [selectedFilters, setSelectedFilters] = useState([]);
-  // const [isExpanded, setIsExpanded] = useState(false)
-
   const [expandedItemId, setExpandedItemId] = useState(null);
+
+  const handleExpand = (itemId) => {
+    setExpandedItemId(itemId === expandedItemId ? null : itemId);
+  };
 
   const token = localStorage?.getItem("token");
   let decodedToken;
@@ -537,16 +539,15 @@ export default function Jobs() {
 
   const handleFilterSelection = (paramType, filterName) => {
     // Toggle filter selection
-    if (paramType === "filter") {
-      const updatedFilters = selectedFilters.includes(filterName)
-        ? selectedFilters.filter((filter) => filter !== filterName)
-        : [filterName];
-      const queryParams = new URLSearchParams(window.location.search);
-      queryParams.set(paramType, updatedFilters.join(","));
-      navigate(`${window.location.pathname}?${queryParams.toString()}`);
-      setSelectedFilters(updatedFilters);
-    };
-  }
+    // if (paramType === "filter") {
+    const updatedFilters = selectedFilters.includes(filterName)
+      ? selectedFilters.filter((filter) => filter !== filterName)
+      : [filterName];
+    const queryParams = new URLSearchParams(window.location.search);
+    queryParams.set(paramType, updatedFilters.join(","));
+    navigate(`${window.location.pathname}?${queryParams.toString()}`);
+    setSelectedFilters(updatedFilters);
+  };
 
   const getTypes = async () => {
     await dispatch(getAllTypes());
@@ -642,14 +643,14 @@ export default function Jobs() {
       ""
     );
   }, []);
-  useEffect(() => {
-    setAllJobs([]);
-    setFilters([allIndustries[0]?.id]);
-    setFiltersJobType([allJobTypes[0]?.id]);
-    setFiltersJobStage([allStages[0]?.id]);
-    setFiltersType([allTypes[0]?.id]);
-    setSearchedJobs("");
-  }, []);
+  // useEffect(() => {
+  //   setAllJobs([]);
+  //   setFilters([allIndustries[0]?.id]);
+  //   setFiltersJobType([allJobTypes[0]?.id]);
+  //   setFiltersJobStage([allStages[0]?.id]);
+  //   setFiltersType([allTypes[0]?.id]);
+  //   setSearchedJobs("");
+  // }, []);
   const onChangeFilter = (selectedFilter) => {
     let industry = [];
     selectedFilter.map((type) => {
@@ -813,34 +814,7 @@ export default function Jobs() {
   //       }
   //     }
   //   };
-  const gridContainerRef = useRef(null);
 
-  const scrollToGridItem = (item) => {
-    const gridContainer = gridContainerRef.current;
-    const gridItem = document.getElementById(item);
-  
-    if (gridContainer && gridItem) {
-      const gridItemRect = gridItem.getBoundingClientRect();
-      const yOffset = gridItemRect.top + gridItemRect.height / 2 + window.pageYOffset;
-  
-      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-      const scrollToCenter = yOffset - windowHeight / 2;
-  
-      window.scrollTo({
-        top: scrollToCenter,
-        behavior: 'smooth',
-      });
-    }
-  };
-
-  const handleExpand = (itemId) => {
-    if(itemId === expandedItemId) {
-      setExpandedItemId(null);
-    } else {
-      setExpandedItemId(itemId);
-      scrollToGridItem(itemId);
-    }
-  };
   return (
     <Grid
       container
@@ -856,7 +830,7 @@ export default function Jobs() {
           onChangeFilter={onChangeFilter}
         />
       </Box>
-      {/* <Outlet /> */}
+      {/*      <Outlet />*/}
       <Grid xs={12} sm={6} md={8} lg={9} xl={10}>
         <SearchBar
           placeholder={i18n["jobs.searchPlaceholder"]}
@@ -895,39 +869,72 @@ export default function Jobs() {
               display: { xs: "none", md: "flex" },
               marginTop: "60px",
             }}
-            ref={gridContainerRef}
           >
             {allJobs.length > 0
               ? allJobs?.map((job) => (
-                <Grid id={job?.job_id} xl={expandedItemId === job.job_id ? 12 : 3}
-                  lg={expandedItemId === job.job_id ? 12 : 4}
-                  md={expandedItemId === job.job_id ? 12 : 6}
-                  xs={12} key={job.job_id}>
-                  <JobCard
-                    index={job.job_id}
-                    job={job}
-                    setQuestions={setQuestions}
-                    onHandleClose={onHandleClose}
-                    setopenApplyJobDialog={setopenApplyJobDialog}
-                    setIsExpanded={handleExpand}
-                  />
-                </Grid>
-              ))
+                  <Grid
+                    xl={expandedItemId === job.job_id ? 12 : 3}
+                    lg={expandedItemId === job.job_id ? 12 : 4}
+                    md={expandedItemId === job.job_id ? 12 : 6}
+                    xs={12}
+                    key={job.job_id}
+                    ref={(ref) => {
+                      if (expandedItemId === job.job_id && ref) {
+                        ref.scrollIntoView({
+                          behavior: "smooth",
+                          block: "start",
+                        });
+                      }
+                    }}
+                  >
+                    <JobCard
+                      index={job.job_id}
+                      job={job}
+                      setQuestions={setQuestions}
+                      onHandleClose={onHandleClose}
+                      setopenApplyJobDialog={setopenApplyJobDialog}
+                      setIsExpanded={handleExpand}
+                    />
+                  </Grid>
+                ))
               : (allJobs.length = 0 ? (
-                <Box
-                  sx={{
-                    width: "100%",
-                    textAlign: "center",
-                    mt: 4,
-                    color: theme.palette.placeholder,
-                  }}
-                >
-                  {i18n["jobs.noData"]}
-                </Box>
-              ) : null)}
+                  <Box
+                    sx={{
+                      width: "100%",
+                      textAlign: "center",
+                      mt: 4,
+                      color: theme.palette.placeholder,
+                    }}
+                  >
+                    {i18n["jobs.noData"]}
+                  </Box>
+                ) : null)}
           </Grid>
         </InfiniteScroll>
+        {/*<Grid container spacing={2} sx={{ my: 2, display: { md: "none" } }}>
+          <SwipeableViews enableMouseEvents onTouchStart={isolateTouch}>
+            <Grid xl={3} lg={4} md={6} xs={12} sx={{ px: 3 }}>
+              <JobCard index="11" />
+            </Grid>
+            <Grid xl={3} lg={4} md={6} xs={12} sx={{ px: 3 }}>
+              <JobCard index="12" />
+            </Grid>
+            <Grid xl={3} lg={4} md={6} xs={12} sx={{ px: 3 }}>
+              <JobCard index="13" />
+            </Grid>
+            <Grid xl={3} lg={4} md={6} xs={12} sx={{ px: 3 }}>
+              <JobCard index="14" />
+            </Grid>
+            <Grid xl={3} lg={4} md={6} xs={12} sx={{ px: 3 }}>
+              <JobCard index="15" />
+            </Grid>
+            <Grid xl={3} lg={4} md={6} xs={12} sx={{ px: 3 }}>
+              <JobCard index="16" />
+            </Grid>
+          </SwipeableViews>
+        </Grid>*/}
       </Grid>
+
       <Box>
         <ButtonPanel
           topMargin={true}

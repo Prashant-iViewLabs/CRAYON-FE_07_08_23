@@ -55,7 +55,9 @@ export const postApi = (
         data: {
           status: "error",
           code: error.code,
-          message: error.response.data.errors,
+          message: error.response.data.errors
+            ? error.response.data.errors
+            : error.response.data,
         },
       };
       return errorRes;

@@ -93,6 +93,7 @@ export default function TeamInfo() {
   const getTeamsInfo = async () => {
     try {
       const { payload } = await dispatch(getTeamInfo(id));
+      setmemberName(payload.name);
       if (payload?.status == "success") {
         setEmployerType(payload.data[0].employer_role_type);
         setRows(
@@ -108,7 +109,6 @@ export default function TeamInfo() {
             );
           })
         );
-        setmemberName(payload.name);
       } else {
         dispatch(
           setAlert({
@@ -123,7 +123,7 @@ export default function TeamInfo() {
         setAlert({
           show: true,
           type: ALERT_TYPE.ERROR,
-          msg: ERROR_MSG,
+          msg: "This user has no jobs assigned",
         })
       );
     }

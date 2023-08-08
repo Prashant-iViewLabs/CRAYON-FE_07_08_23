@@ -24,8 +24,9 @@ const TrackButton = ({ job }) => {
       <Button
         variant="contained"
         sx={{
+          // marginLeft: 1,
           borderRadius: 0,
-          width: "100%"
+          width: "100%",
         }}
         id="fade-button"
         aria-controls={open ? "fade-menu" : undefined}

@@ -22,6 +22,8 @@ import SingleRadialChart from "../../../common/SingleRadialChart";
 import SmallButton from "../../../common/SmallButton";
 import CustomCard from "../../../common/CustomCard";
 import PlaceIcon from "@mui/icons-material/Place";
+import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
+import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import TextWrapper from "../../../common/TextWrapper";
 import {
   convertDatetimeAgo,
@@ -476,7 +478,7 @@ export default function TalentCard({ index, job, setisFlipped }) {
             {arrSlider
               .filter((item) => item != null || item?.industry?.name != null)
               .map((item, index) => {
-                if (item != "") {
+                if (item != "" && index < 2) {
                   return (
                     <SmallButton
                       color={
@@ -496,6 +498,7 @@ export default function TalentCard({ index, job, setisFlipped }) {
                 }
               })}
           </Box>
+
           <TextWrapper
             mt="12px"
             mb={1}

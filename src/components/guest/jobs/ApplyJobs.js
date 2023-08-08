@@ -193,8 +193,8 @@ export default function ApplyJobs({ questions, setopenApplyJobDialog }) {
             history("/candidate/my-profile", { replace: true });
           }
         }
-        setLocalStorage("isLoggedIn", true);
-        setLocalStorage("userType", user);
+        // setLocalStorage("isLoggedIn", true);
+        // setLocalStorage("userType", user);
         localStorage.removeItem("fileName");
         localStorage.removeItem("job_id");
         localStorage.removeItem("jobs_user_id");

@@ -40,6 +40,7 @@ import {
 } from "../../utils/Common";
 import { login } from "../../redux/login/loginSlice";
 import { Popover } from "@mui/material";
+import jwt_decode from "jwt-decode";
 
 const StyledTab = styled(Tabs)(({ theme }) => ({
   "& .MuiTab-root": {
@@ -63,11 +64,18 @@ export default function TopBar() {
   let { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const userType = getLocalStorage("userType");
+  const token = localStorage?.getItem("token");
+  let decodedToken;
+  if (token) {
+    decodedToken = jwt_decode(token);
+  }
+
+  const userType = decodedToken?.data?.role_id;
 
   const [isLoggedIn, setIsLoggedIn] = useState(
-    Boolean(getLocalStorage("isLoggedIn"))
+    Boolean(getLocalStorage("token"))
   );
+
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentTabs, setcurrentTabs] = useState(PUBLIC_TAB_ITEMS);
   const [activeTab, setActiveTab] = useState(pathname.slice(1));
@@ -143,8 +151,9 @@ export default function TopBar() {
   };
 
   const signUpHandle = () => {
-    const role_id = localStorage.getItem("rolID");
-    if (localStorage.getItem("isLoggedIn") && localStorage.getItem("temp")) {
+    const role_id = decodedToken?.data?.role_id;
+    console.log(role_id, decodedToken?.data?.role_id);
+    if (Boolean(getLocalStorage("token")) && localStorage.getItem("temp")) {
       let tabs;
       if (role_id == 4) {
         tabs = AUTHORIZED_TAB_ITEMS_EMPLOYER;
@@ -156,8 +165,8 @@ export default function TopBar() {
         setActiveTab("candidate/my-profile");
       }
       setcurrentTabs(tabs);
-      setLocalStorage("isLoggedIn", true);
-      setLocalStorage("userType", role_id);
+      // setLocalStorage("isLoggedIn", true);
+      // setLocalStorage("userType", role_id);
       setIsLoggedIn(true);
       localStorage.removeItem("temp");
     }
@@ -211,8 +220,8 @@ export default function TopBar() {
         }
 
         setcurrentTabs(tabs);
-        setLocalStorage("isLoggedIn", true);
-        setLocalStorage("userType", user);
+        // setLocalStorage("isLoggedIn", true);
+        // setLocalStorage("userType", user);
         setIsLoggedIn(true);
         dispatch(
           setAlert({

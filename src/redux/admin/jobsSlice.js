@@ -81,6 +81,33 @@ export const getAllTalentJobs = createAsyncThunk(
   }
 );
 
+export const getAllCompanies = createAsyncThunk(
+  "getAllCompanies",
+  async ({ lastKey }, { dispatch }) => {
+    dispatch(setLoading(true));
+    const { data } = await getApi(
+      "/admin/maintenance/getcompanies?lastKey=" + lastKey,
+      true
+    );
+    dispatch(setLoading(false));
+    return data;
+  }
+);
+
+export const approveCompany = createAsyncThunk(
+  "approveCompany",
+  async (payload, { dispatch }) => {
+    dispatch(setLoading(true));
+    const { data } = await postApi(
+      "/admin/maintenance/updatecompanystatus",
+      payload,
+      true
+    );
+    dispatch(setLoading(false));
+    return data;
+  }
+);
+
 export const jobsSlice = createSlice({
   name: "config",
   initialState,

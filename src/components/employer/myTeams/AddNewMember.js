@@ -21,7 +21,7 @@ import { IconButton } from "@mui/material";
 
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import SelectMenu from "../../common/SelectMenu";
 import AutoComplete from "../../common/AutoComplete";
 import { useDispatch } from "react-redux";
@@ -65,6 +65,8 @@ const MEMBER_INFO = {
 
 const AddNewMember = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const companyName = location.state?.companyname;
   const [invitSent, setInviteSent] = useState(false);
   const [showPassword, setShowPassword] = useState(true);
   const [companies, setCompanies] = useState([]);
@@ -323,7 +325,9 @@ const AddNewMember = () => {
             value={
               companies?.find(
                 (title) => title.company_id === memberData?.company_name
-              ) || memberData?.company_name
+              ) ||
+              memberData?.company_name ||
+              companyName
             }
             onChange={handleCompVal}
             placeholder={"Enter the user's compnay"}

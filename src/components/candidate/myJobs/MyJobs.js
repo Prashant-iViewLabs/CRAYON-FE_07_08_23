@@ -148,7 +148,7 @@ export default function Talent() {
             {candidateJobs.length > 0 ? (
               candidateJobs?.map((talent) => (
                 <Grid xl={3} lg={4} md={6} xs={12} key={talent}>
-                  <MyJobsCard index={talent} job={talent} getJobs={getJobs}/>
+                  <MyJobsCard index={talent} job={talent} getJobs={getJobs} />
                 </Grid>
               ))
             ) : (

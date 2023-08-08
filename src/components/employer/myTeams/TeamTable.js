@@ -14,6 +14,7 @@ import { ALERT_TYPE, ERROR_MSG } from "../../../utils/Constants";
 import { useEffect } from "react";
 import { useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
+import MemberInfo from "./MemberInfo";
 
 function createData(
   name,
@@ -42,9 +43,10 @@ const TeamTable = () => {
   const [openDelete, setOpenDelete] = useState(false);
   const [deleted, setDeleted] = useState(0);
   const [companyName, setCompanyName] = useState("");
+  const [role, setRole] = useState(0);
 
   const handleAddNewMemberClick = () => {
-    navigate("add-new-member");
+    navigate("add-new-member", { state: { companyname: companyName } });
   };
 
   const getTeamsMember = async () => {
@@ -65,6 +67,7 @@ const TeamTable = () => {
             );
           })
         );
+        setRole(payload?.roletypeId);
       } else {
         dispatch(
           setAlert({
@@ -95,96 +98,117 @@ const TeamTable = () => {
   };
   return (
     <Box
-      sx={{
-        boxShadow: 2,
-        borderRadius: "15px",
-        backgroundColor: "#ffff",
-        margin: "0 24px 24px 24px",
-        // minHeight: "80vh",
-        display: "flex",
-        flexGrow: 1,
-        flexDirection: "column",
-        justifyContent: "space-between",
-        width: "57vh",
-      }}
+      sx={
+        role === 1 || role === 2
+          ? {
+              boxShadow: 2,
+              borderRadius: "15px",
+              backgroundColor: "#ffff",
+              margin: "0 24px 24px 24px",
+              // minHeight: "80vh",
+              display: "flex",
+              flexGrow: 1,
+              flexDirection: "column",
+              justifyContent: "space-between",
+              width: "57vh",
+            }
+          : {
+              margin: "0 24px 24px 24px",
+              // minHeight: "80vh",
+              display: "flex",
+              flexGrow: 1,
+              flexDirection: "column",
+              justifyContent: "space-between",
+              width: "57vh",
+            }
+      }
     >
       {/* HeaderSection Starts*/}
-      <Box
-        className="HeaderSection"
-        sx={{
-          p: "24px 54px 0 54px",
-        }}
-      >
+      {role === 1 || role === 2 ? (
         <Box
+          className="HeaderSection"
           sx={{
-            display: "flex",
-            gap: 2,
-            alignItems: "center",
+            p: "24px 54px 0 54px",
           }}
         >
-          <Typography
-            sx={{
-              fontSize: "20px",
-              fontWeight: 700,
-            }}
-          >
-            {companyName}
-          </Typography>
-          <SmallButton
-            backgroundColor={"lightGray"}
-            color={"black"}
-            m={0}
-            label={rows.length}
-          />
-        </Box>
-        <Box>
-          <Typography variant="p">
-            Add and manage your team's and recruiter account permissions
-          </Typography>
-        </Box>
-        <Box
-          sx={{
-            margin: "30px 0",
-            display: "flex",
-            gap: 2,
-          }}
-        >
-          {/* <Link to={`add-new-member`}> */}
-          <Button
-            variant="contained"
-            color="redButton"
-            onClick={handleAddNewMemberClick}
-          >
-            add new member
-          </Button>
-          {/* </Link> */}
-          <Button variant="contained" color="grayButton">
-            download CSV
-          </Button>
           <Box
             sx={{
               display: "flex",
-              marginLeft: "auto",
+              gap: 2,
               alignItems: "center",
-              cursor: "pointer",
             }}
-            onClick={handleOpenDelete}
           >
-            <CloseIcon color="redButton100" />
-            <Typography>remove selected users</Typography>
+            <Typography
+              sx={{
+                fontSize: "20px",
+                fontWeight: 700,
+              }}
+            >
+              {companyName}
+            </Typography>
+            <SmallButton
+              backgroundColor={"lightGray"}
+              color={"black"}
+              m={0}
+              label={rows.length}
+            />
+          </Box>
+          <Box>
+            <Typography variant="p">
+              Add and manage your team's and recruiter account permissions
+            </Typography>
+          </Box>
+          <Box
+            sx={{
+              margin: "30px 0",
+              display: "flex",
+              gap: 2,
+            }}
+          >
+            {/* <Link to={`add-new-member`}> */}
+            <Button
+              variant="contained"
+              color="redButton"
+              onClick={handleAddNewMemberClick}
+            >
+              add new member
+            </Button>
+            {/* </Link> */}
+            <Button variant="contained" color="grayButton">
+              download CSV
+            </Button>
+            <Box
+              sx={{
+                display: "flex",
+                marginLeft: "auto",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+              onClick={handleOpenDelete}
+            >
+              <CloseIcon color="redButton100" />
+              <Typography>remove selected users</Typography>
+            </Box>
           </Box>
         </Box>
-      </Box>
+      ) : null}
       {/* HeaderSection Ends*/}
 
-      <Divider />
       {/* DataTable Section Starts */}
-      <TeamsDataTable
-        rows={rows}
-        openDelete={openDelete}
-        setOpenDelete={setOpenDelete}
-        setDeleted={setDeleted}
-      />
+      {role === 1 || role === 2 ? (
+        <>
+          <Divider />
+          <TeamsDataTable
+            rows={rows}
+            openDelete={openDelete}
+            setOpenDelete={setOpenDelete}
+            setDeleted={setDeleted}
+            role={role}
+          />
+        </>
+      ) : (
+        <MemberInfo rows={rows} />
+      )}
       {/* DataTable Section Ends */}
     </Box>
   );

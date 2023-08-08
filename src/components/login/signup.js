@@ -59,8 +59,13 @@ export default function Signup({ onDialogClose }) {
   const [activeTab, setActiveTab] = useState(pathname.slice(1));
   const [isAdmin, setIsAdmin] = useState(false);
   const [currentTabs, setcurrentTabs] = useState(PUBLIC_TAB_ITEMS);
+  const token = localStorage?.getItem("token");
+  let decodedToken;
+  if (token) {
+    decodedToken = jwt_decode(token);
+  }
 
-  const user = getLocalStorage("userType");
+  const user = decodedToken?.data?.role_id;
 
   useEffect(() => {
     //on refresh
@@ -86,12 +91,6 @@ export default function Signup({ onDialogClose }) {
       setcurrentTabs(PUBLIC_TAB_ITEMS);
     }
   }, []);
-
-  const token = localStorage?.getItem("token");
-  let decodedToken;
-  if (token) {
-    decodedToken = jwt_decode(token);
-  }
 
   const formik = useFormik({
     initialValues: FORMDATA,
@@ -124,10 +123,10 @@ export default function Signup({ onDialogClose }) {
       try {
         const { payload } = await dispatch(signup(formBody));
         if (payload?.status === "success") {
-          localStorage.setItem("temp", "temp");
+          // localStorage.setItem("temp", "temp");
           setLocalStorage("token", payload?.token);
-          setLocalStorage("isLoggedIn", true);
-          localStorage.setItem("rolID", payload.data.role_id);
+          // setLocalStorage("isLoggedIn", true);
+          // localStorage.setItem("rolID", payload.data.role_id);
           localStorage.removeItem("fileName");
           localStorage.removeItem("job_id");
           localStorage.removeItem("jobs_user_id");
@@ -144,12 +143,13 @@ export default function Signup({ onDialogClose }) {
           if (onDialogClose) {
             onDialogClose();
           }
-        } else {
+        } else if (payload?.status === "error") {
+          console.log(payload);
           dispatch(
             setAlert({
               show: true,
               type: ALERT_TYPE.ERROR,
-              msg: payload?.message,
+              msg: payload?.message?.message,
             })
           );
         }

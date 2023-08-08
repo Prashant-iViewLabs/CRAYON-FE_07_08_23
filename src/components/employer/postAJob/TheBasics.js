@@ -55,7 +55,6 @@ const StyledButton = styled(Button)(({ theme }) => ({
 
 const BASIC = {
   job_id: null,
-  company_id: 807, // remobe company id once employer flow is setup
   job_title_id: "",
   job_role_type: "",
   job_type: "crayon recruit",

@@ -1270,16 +1270,21 @@ import { login } from "../../../redux/login/loginSlice";
 import { getLocalStorage, setLocalStorage } from "../../../utils/Common";
 import { getJobDetail } from "../../../redux/guest/jobsSlice";
 import DOMPurify from "dompurify";
-
+import { formatCurrencyWithCommas } from "../../../utils/Currency";
 import { getAllQuestionsWithoutLogin } from "../../../redux/guest/getQuestions";
-import { formatCurrencyWithCommas } from '../../../utils/Currency'
+
 const label1 = "applied";
 const label2 = "shortlisted";
 const label3 = "interviewed";
 const label4 = "grit score";
 const label5 = "month contract";
 
-export default function JobsDetailPage({id, jobDetails, setIsExpanded, setIsExpandedData}) {
+export default function JobsDetailPage({
+  id,
+  jobDetails,
+  setIsExpanded,
+  setIsExpandedData,
+}) {
   const theme = useTheme();
   const i18n = locale.en;
   const dispatch = useDispatch();
@@ -1291,7 +1296,7 @@ export default function JobsDetailPage({id, jobDetails, setIsExpanded, setIsExpa
   const [isHovered, setIsHovered] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(
-    Boolean(getLocalStorage("isLoggedIn"))
+    Boolean(getLocalStorage("token"))
   );
 
   const [openApplyJobDialog, setopenApplyJobDialog] = useState(false);
@@ -1310,6 +1315,12 @@ export default function JobsDetailPage({id, jobDetails, setIsExpanded, setIsExpa
         })
       );
     }
+  };
+
+  const handleCancel = () => {
+    // navigate("/jobs", { replace: true });
+    setIsExpanded(null);
+    setIsExpandedData(false);
   };
   const getquestionswithoutlogin = async () => {
     const { payload } = await dispatch(
@@ -1373,8 +1384,8 @@ export default function JobsDetailPage({id, jobDetails, setIsExpanded, setIsExpa
             navigate("/candidate/my-profile", { replace: true });
           }
         }
-        setLocalStorage("isLoggedIn", true);
-        setLocalStorage("userType", user);
+        // setLocalStorage("isLoggedIn", true);
+        // setLocalStorage("userType", user);
         setIsLoggedIn(true);
         dispatch(
           setAlert({
@@ -1397,11 +1408,9 @@ export default function JobsDetailPage({id, jobDetails, setIsExpanded, setIsExpa
     }
   };
 
-  const handleCancel = () => {
-    // navigate("/jobs", { replace: true });
-    setIsExpanded(null)
-    setIsExpandedData(false)
-  };
+  // const handleCancel = () => {
+  //   navigate("/jobs", { replace: true });
+  // };
 
   const handleCardClick = async () => {
     try {
@@ -1425,7 +1434,11 @@ export default function JobsDetailPage({id, jobDetails, setIsExpanded, setIsExpa
       __html: DOMPurify.sanitize(html),
     };
   }
-  
+
+  useEffect(() => {
+    // handleCardClick();
+  }, []);
+
   return (
     <Grid
       container

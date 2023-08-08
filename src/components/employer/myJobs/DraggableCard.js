@@ -364,21 +364,32 @@ export default function DraggableCard({
                         width: "100%",
                       }}
                     >
-                      <Typography
-                        sx={{
-                          fontWeight: 500,
-                          mr: 1,
-                          fontSize: "12px",
-                          color: theme.palette.blueButton400.main,
-                          width: "115px",
-                        }}
+                      <Tooltip
+                        title={
+                          item?.candidate_profile?.candidate_info?.job_title
+                            ?.title
+                        }
+                        placement="top-end"
                       >
-                        {item?.candidate_profile?.candidate_info?.job_title
-                          ?.title
-                          ? item?.candidate_profile?.candidate_info?.job_title
-                              ?.title
-                          : "-"}
-                      </Typography>
+                        <Typography
+                          sx={{
+                            fontWeight: 500,
+                            mr: 1,
+                            fontSize: "12px",
+                            color: theme.palette.blueButton400.main,
+                            width: "100px",
+                            whiteSpace: "nowrap", // Prevents text from wrapping
+                            overflow: "hidden", // Hides any overflowing content
+                            textOverflow: "ellipsis", // Adds dots at the end of overflowing text
+                          }}
+                        >
+                          {item?.candidate_profile?.candidate_info?.job_title
+                            ?.title
+                            ? item?.candidate_profile?.candidate_info?.job_title
+                                ?.title
+                            : "-"}
+                        </Typography>
+                      </Tooltip>
                       <StyledHR></StyledHR>
                       <IconButton sx={{ padding: "0 !important" }}>
                         <ManIcon color="blueButton400"></ManIcon>

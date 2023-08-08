@@ -21,6 +21,7 @@ import LanguageIcon from "@mui/icons-material/Language";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import ShowChartIcon from "@mui/icons-material/ShowChart";
 import { useNavigate, useLocation } from "react-router-dom";
+import jwt_decode from "jwt-decode";
 
 const StyledList = styled(List)(({ theme }) => ({
   "& .MuiButtonBase-root": {
@@ -92,6 +93,14 @@ export default function LeftDrawer() {
     navigate(`${parentPath}/${childPath}`, { replace: false });
   };
 
+  const token = localStorage?.getItem("token");
+  let decodedToken;
+  if (token) {
+    decodedToken = jwt_decode(token);
+  }
+
+  console.log(decodedToken?.data?.role_id);
+
   const renderIcon = ({ icon, color }) => {
     switch (icon) {
       case "CreditCardIcon":
@@ -117,7 +126,9 @@ export default function LeftDrawer() {
       component="nav"
       aria-labelledby="nested-list-subheader"
     >
-      {ADMIN_LFET_PANEL.map((item, index) => (
+      {ADMIN_LFET_PANEL.filter((item) =>
+        decodedToken?.data?.role_id === 1 ? item : item.title !== "Maintenance"
+      ).map((item, index) => (
         <div key={index}>
           <ListItemButton
             onClick={(event) =>

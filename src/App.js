@@ -38,6 +38,8 @@ import MyTeams from './components/employer/myTeams/MyTeams';
 import AddNewMember from './components/employer/myTeams/AddNewMember';
 import TeamTable from './components/employer/myTeams/TeamTable'
 import TeamInfo from './components/employer/myTeams/TeamInfo';
+import Company from './components/admin/maintenance/Company';
+import Maintenance from './components/admin/maintenance/Maintenance';
 
 export default function App() {
   return (
@@ -72,6 +74,9 @@ export default function App() {
         <Route exact path='admin' element={<PrivateRoute><Admin /></PrivateRoute>} >
           <Route path='admin-talent' element={<PrivateRoute><AdminTalent /></PrivateRoute>} >
             <Route path='all-talent' element={<PrivateRoute><AllTalent /></PrivateRoute>} />
+          </Route>
+          <Route path='maintenance' element={<PrivateRoute><Maintenance /></PrivateRoute>} >
+            <Route path='company' element={<PrivateRoute><Company /></PrivateRoute>} />
           </Route>
           <Route path='adminJobs' element={<PrivateRoute><AdminJobs /></PrivateRoute>} >
             <Route path='active-jobs' element={<PrivateRoute><ActiveJobs /></PrivateRoute>} />

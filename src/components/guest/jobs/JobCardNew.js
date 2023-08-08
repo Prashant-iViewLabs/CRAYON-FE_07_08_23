@@ -13,7 +13,7 @@ export default function JobCard({
   setIsExpanded,
 }) {
   const [isHorizontalFlipped, setisHorizontalFlipped] = useState(false);
-  
+
   return (
     <ReactCardFlip
       isFlipped={isHorizontalFlipped}
