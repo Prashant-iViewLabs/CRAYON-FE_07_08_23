@@ -44,6 +44,8 @@ import profile_challenger from "../../../../assets/Profile Icons_Challenger.svg"
 import profile_character from "../../../../assets/Profile Icons_Charater.svg";
 import profile_collaborator from "../../../../assets/Profile Icons_Collaborator.svg";
 import profile_contemplator from "../../../../assets/Profile Icons_Contemplator.svg";
+import Slider2 from "../../../common/Slider2";
+import Slider from "../../../common/Slider";
 
 export default function TalentCard({ index, job, setisFlipped }) {
   const i18n = locale.en;
@@ -65,6 +67,8 @@ export default function TalentCard({ index, job, setisFlipped }) {
   const [arrSlider2, setArrSlider2] = useState([
     ...(job?.candidate_profile?.candidate_traits || []),
   ]);
+  // const jobTraits = job?.candidate_profile?.candidate_traits.map(trait => trait?.)
+
 
   // console.log(arrSlider2);
 
@@ -74,15 +78,6 @@ export default function TalentCard({ index, job, setisFlipped }) {
     decodedToken = jwt_decode(token);
   }
 
-  const handleRightClick = () => {
-    setArrSlider2([...arrSlider2.slice(1), ...arrSlider2.slice(0, 1)]);
-  };
-  const handleLeftClick = () => {
-    setArrSlider2([
-      ...arrSlider2.slice(arrSlider2.length - 1),
-      ...arrSlider2.slice(0, arrSlider2.length - 1),
-    ]);
-  };
 
   const handleHoverEnter = () => {
     setColorKey("hover");
@@ -296,11 +291,11 @@ export default function TalentCard({ index, job, setisFlipped }) {
               color: theme.palette.black,
             }}
           >
-            <TextWrapper line={1} weight={700} size={20} minHeight={30}>
+            <TextWrapper line={1} weight={700} size={20} gutterBottom={false}>
               {job?.first_name}
             </TextWrapper>
           </Link>
-          <TextWrapper line={1} weight={700} size={20} minHeight={30}>
+          <TextWrapper line={1} weight={700} size={20}>
             {job?.candidate_profile?.candidate_info?.job_title?.title}
           </TextWrapper>
           <Box
@@ -551,7 +546,7 @@ export default function TalentCard({ index, job, setisFlipped }) {
               </IconButton>
             ) : null}
           </Grid> */}
-          <Grid container spacing={2}>
+          {/* <Grid container spacing={2}>
             {arrSlider2.length >= 5 ? (
               <IconButton
                 sx={{
@@ -614,7 +609,16 @@ export default function TalentCard({ index, job, setisFlipped }) {
                 <KeyboardArrowRightIcon />
               </IconButton>
             ) : null}
-          </Grid>
+          </Grid> */}
+          <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1
+          }}>
+            <Slider2 items={["full time", "accounts", "sales", "Numbers", "Credit"]} color={"yellowButton200"} hideTagsAfter={3} />
+            <Slider2 items={["xero", "excel", "SAP", "Pastel"]} color={"yellowButton100"} hideTagsAfter={3} />
+            <Slider items={["organised", "detailed", "proactive", "thrives on stress", "adapatable"]} theme={theme} color={"grayButton200"}/>
+          </Box>
         </Grid>
         <Box sx={{ display: "flex", alignItems: "end", marginBottom: "12px" }}>
           <Button

@@ -31,7 +31,9 @@ import {
   AccountBalanceWallet,
   CalendarMonth,
   NavigateNext,
+  Circle
 } from "@mui/icons-material";
+import Slider2 from "../../common/Slider2";
 
 const label1 = "applicants";
 const label2 = "shortlisted";
@@ -53,12 +55,8 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
   const [openManageJobDialog, setOpenManageJobDialog] = useState(false);
   const myStatus = useSelector((state) => state.configMyStatus.mystatusfilter);
 
-  const [arrSlider, setArrSlider] = useState([
-    job?.industry_jobs[0],
-    job?.type,
-    job?.work_setup,
-  ]);
-
+  const industries = job?.industry_jobs.map(industry => industry?.industry.name)
+  console.log(industries)
   const [arrSlider2, setArrSlider2] = useState([
     job?.primary?.name,
     job?.shadow?.name,
@@ -107,15 +105,6 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
     }
   };
 
-  const handleRightClick = () => {
-    setArrSlider2([...arrSlider2.slice(1), ...arrSlider2.slice(0, 1)]);
-  };
-  const handleLeftClick = () => {
-    setArrSlider2([
-      ...arrSlider2.slice(arrSlider2.length - 1),
-      ...arrSlider2.slice(0, arrSlider2.length - 1),
-    ]);
-  };
 
   const showManageJob = () => {
     setOpenManageJobDialog(true);
@@ -138,10 +127,6 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
       __html: DOMPurify.sanitize(html),
     };
   }
-
-  useEffect(() => {
-    // getmyStatus();
-  }, []);
 
   return (
     <CustomCard
@@ -226,11 +211,19 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
               width: "40%",
               flexDirection: "column",
               border: "1px solid lightGray",
+              borderTop: 0,
+              borderRight: 0,
               borderRadius: "0 0px 0px 10px",
             }}
           >
             <TrackButton job={job} />
-            <Typography>{job?.job_status?.name || "Status"}</Typography>
+            <Typography sx={{
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
+              fontWeight: "Bold",
+              fontSize: "0.9rem"
+            }}>{job?.job_status?.name || "Status"} <Circle fontSize="string" color={job?.job_status?.name === "active" ? "success" : "error"} /></Typography>
           </Box>
         </Box>
       </Grid>
@@ -239,7 +232,7 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
         sx={{
           display: "flex",
           width: "100%",
-          height: "250px",
+          height: "270px",
         }}
       >
         <Grid
@@ -257,9 +250,8 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
             placement="top"
           >
             <Link
-              to={`/candidate/job-detail/${`${
-                job?.town?.name + " " + job?.town?.region?.name
-              }`}/${job?.job_id}`}
+              to={`/candidate/job-detail/${`${job?.town?.name + " " + job?.town?.region?.name
+                }`}/${job?.job_id}`}
               target={"_blank"}
               style={{
                 textDecoration: "none",
@@ -350,51 +342,15 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
               </Typography>
             </Box>
           </Box>
-          <Box
-            minHeight={25}
-            sx={
-              job?.industry_jobs.length <= 1 &&
-              job?.type !== "" &&
-              job?.work_setup !== ""
-                ? {
-                    width: "100%",
-                    display: "flex",
-                  }
-                : {
-                    width: "100%",
-                    display: "flex",
-                    overflow: "hidden",
-                  }
-            }
-          >
-            {arrSlider
-              .filter((item) => item !== null || item?.industry?.name !== null)
-              .map((item, index) => {
-                if (item !== "") {
-                  return (
-                    <SmallButton
-                      color={
-                        item?.industry?.name
-                          ? "blueButton600"
-                          : item === ""
-                          ? ""
-                          : "blueButton700"
-                      }
-                      height={25}
-                      // label={item?.industry ? item?.industry?.name : item}
-                      value={item?.industry?.name}
-                      label={
-                        item?.industry
-                          ? item?.industry?.name?.split(" ")[0]
-                          : item
-                      }
-                      mr="4px"
-                    />
-                  );
-                }
-              })}
+          <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1
+          }}>
+            <Slider2 items={[job?.type,
+            job?.work_setup]} color={"blueButton700"} hideTagsAfter={2}/>
+            <Slider2 items={industries} color={"blueButton600"} hideTagsAfter={2}/>
           </Box>
-
           <TextWrapper
             children={job?.description}
             mt="12px"
@@ -628,9 +584,9 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
               (job?.candidate_status === "not for me" &&
                 theme.status.notforme.main),
             "& .css-1g66942-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root":
-              {
-                color: theme.palette.base.main,
-              },
+            {
+              color: theme.palette.base.main,
+            },
           }}
         />
         {/* </Grid> */}

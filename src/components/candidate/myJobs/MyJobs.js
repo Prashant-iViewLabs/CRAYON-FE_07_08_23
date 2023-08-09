@@ -4,7 +4,6 @@ import TalentCard from "../../guest/talent/TalentCard";
 import MyJobsCard from "./MyJobsCardNew";
 import { useTheme } from "@mui/material/styles";
 import SearchBar from "../../common/SearchBar";
-import SwipeableViews from "react-swipeable-views";
 import ButtonPanel from "../../common/ButtonPanel";
 import {
   ALERT_TYPE,

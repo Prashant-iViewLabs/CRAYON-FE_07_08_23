@@ -6,7 +6,7 @@ export default function TextWrapper({
   line = 3,
   weight = 400,
   size = 14,
-  minHeight,
+  gutterBottom = true,
   ...rest
 }) {
   return (
@@ -19,7 +19,6 @@ export default function TextWrapper({
     >
       <Typography
         sx={{
-          minHeight: minHeight ? minHeight : "60px",
           fontWeight: weight,
           fontSize: size,
           overflow: "hidden",
@@ -28,7 +27,7 @@ export default function TextWrapper({
           WebkitLineClamp: line,
           ...rest,
         }}
-        gutterBottom
+        gutterBottom={gutterBottom}
       >
         {children}
       </Typography>

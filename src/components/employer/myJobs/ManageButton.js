@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import locale from '../../../i18n/locale'
 import { alpha, styled } from '@mui/material/styles';
 import Menu from '@mui/material/Menu';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowDown';
 import Typography from '@mui/material/Typography';
 import { IconButton } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -25,6 +25,14 @@ const StyledMenu = styled((props) => (
         //     vertical: 'top',
         //     horizontal: 'right',
         // }}
+        anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'left',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
         {...props}
     />
 ))(({ theme }) => ({
@@ -107,7 +115,7 @@ export default function ManageButton({ index }) {
                 variant="contained"
                 elevation={0}
                 onClick={handleClick}
-                endIcon={<KeyboardArrowDownIcon />}
+                endIcon={<KeyboardArrowUpIcon />}
                 color='blueButton400'
                 sx={{ ml: 1, boxShadow: 0, width: '80%' }}
             >

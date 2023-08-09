@@ -77,6 +77,10 @@ const theme = createTheme({
       contrastText: "#FFFFFF",
       light: "#78909c",
     },
+    grayButton100: {
+      main: "#efeeee",
+      light: "#000000",
+    },
     grayButton200: {
       main: "#E5E5E5",
       contrastText: "#000000",

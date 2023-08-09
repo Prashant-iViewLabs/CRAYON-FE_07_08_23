@@ -23,6 +23,8 @@ import { assignJobs, getAllTeamMembers } from "../../../redux/employer/myTeams";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { Link } from "react-router-dom";
 
+import PermContactCalendarOutlinedIcon from '@mui/icons-material/PermContactCalendarOutlined';
+
 const StyledMenu = styled((props) => (
   <Menu
     elevation={4}
@@ -171,11 +173,15 @@ export default function ButtomMenu({ jobId, disabledButton }) {
         variant="contained"
         elevation={0}
         onClick={(e) => handleClick(e, jobId)}
-        endIcon={<KeyboardArrowDownIcon />}
-        color="blueButton400"
-        sx={{ ml: 1, boxShadow: 0, width: "82px" }}
+        // endIcon={}
+        color="grayButton100"
+        sx={{
+          borderRadius: 0,
+          padding: 0,
+          paddingLeft: 1,
+        }}
       >
-        {i18n["teamMenu.label"]}
+        <PermContactCalendarOutlinedIcon /><KeyboardArrowDownIcon />
       </Button>
       <StyledMenu
         id="customized-menu"

@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
-import MyJobsCard from "./MyJobsCard";
+import MyJobsCard from "./MyJobsCardNew";
 import ButtonPanel from "../../common/ButtonPanel";
 import { ALERT_TYPE } from "../../../utils/Constants";
 import SearchBar from "../../common/SearchBar";

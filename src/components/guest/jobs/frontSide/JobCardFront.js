@@ -2,14 +2,10 @@ import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import job_logo from "../../../../assets/job_logo.svg";
 import job_volume from "../../../../assets/job_volume.svg";
-import job_star from "../../../../assets/job_star.svg";
-import job_star_selected from "../../../../assets/job_star_selected.svg";
 import job_exp from "../../../../assets/job_exp.png";
-import job_apply from "../../../../assets/job_apply.svg";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import locale from "../../../../i18n/locale";
 import {
@@ -22,13 +18,8 @@ import SingleRadialChart from "../../../common/SingleRadialChart";
 import SmallButton from "../../../common/SmallButton";
 import CustomCard from "../../../common/CustomCard";
 import PlaceIcon from "@mui/icons-material/Place";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import TextWrapper from "../../../common/TextWrapper";
-import {
-  convertDatetimeAgo,
-  dateConverterMonth,
-} from "../../../../utils/DateTime";
+import { convertDatetimeAgo, dateConverterMonth } from "../../../../utils/DateTime";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { setAlert } from "../../../../redux/configSlice";
@@ -43,6 +34,7 @@ import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import JobsDetailPage from "../JobsDetailPage";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import Slider2 from "../../../common/Slider2";
 
 const label1 = "applied";
 const label2 = "shortlisted";
@@ -55,7 +47,6 @@ const JobCardFront = ({
   onHandleClose,
   setopenApplyJobDialog,
   setisFlipped,
-  setIsExpanded,
 }) => {
   const i18n = locale.en;
   const theme = useTheme();
@@ -63,18 +54,9 @@ const JobCardFront = ({
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
   const [isStar, setIsStarSelected] = useState(job?.favourite);
-  const [arrSlider, setArrSlider] = useState(job?.industry_jobs);
-  const [isExpandedData, setIsExpandedData] = useState(false);
+  const jobIndustries = job?.industry_jobs.map(industry => industry?.industry?.name)
 
-  const [personalityArrSlider, setPersonalityArrSlider] = useState([
-    job?.type,
-    job?.work_setup,
-  ]);
-  const [arrSlider2, setArrSlider2] = useState([
-    job?.primary?.name,
-    job?.shadow?.name,
-    ...(job?.job_traits || []),
-  ]);
+
 
   const token = localStorage?.getItem("token");
   let decodedToken;
@@ -82,13 +64,7 @@ const JobCardFront = ({
     decodedToken = jwt_decode(token);
   }
 
-  const handleJobTitle = () => {
-    setIsExpanded(index);
-    setIsExpandedData(true);
-  };
-
   const handleStar = async () => {
-    console.log(decodedToken?.data?.role_id);
     setIsStarSelected(!isStar);
     decodedToken?.data?.role_id === 3 &&
       (await dispatch(favouriteJob({ reqid: job?.job_id })));
@@ -142,11 +118,6 @@ const JobCardFront = ({
       );
     }
   };
-
-  const handleRightClick = () => {
-    setArrSlider2([...arrSlider2.slice(1), ...arrSlider2.slice(0, 1)]);
-  };
-
   function createMarkup(html) {
     return {
       __html: DOMPurify.sanitize(html),
@@ -155,9 +126,7 @@ const JobCardFront = ({
 
   // const handleJobTitle = () => {
   //   navigate(
-  //     `/jobs/job-detail/${`${
-  //       job?.town?.name + " " + job?.town?.region?.name
-  //     }`}/${job?.job_id}`
+
   //   );
   // };
   return (
@@ -165,401 +134,350 @@ const JobCardFront = ({
       handleMouseEnter={() => setIsHovered(true)}
       handleMouseLeave={() => setIsHovered(false)}
     >
-      {isExpandedData ? (
-        // Render expanded content here
-        // You can create a new component or JSX directly
-        <JobsDetailPage
-          id={index}
-          jobDetails={job}
-          setIsExpanded={setIsExpanded}
-          setIsExpandedData={setIsExpandedData}
+      <Grid
+        container
+        // padding={1}
+        justifyContent="space-between"
+        alignItems="start"
+        overflow={"hidden"}
+        sx={{
+          borderRadius: "25px 25px 0 0",
+          //   gap: 2,
+        }}
+      >
+        <Box
+          component="img"
+          sx={{
+            height: 40,
+            width: 40,
+            maxHeight: { xs: 40 },
+            maxWidth: { xs: 40 },
+            ml: 2,
+            mt: 1,
+            p: 1,
+            borderRadius: 4
+          }}
+          alt="job_logo"
+          src={job?.profile_url !== "No URL" ? job?.profile_url : job_logo}
         />
-      ) : (
-        <>
-          <Grid
-            container
-            // padding={1}
-            justifyContent="space-between"
-            alignItems="start"
-            overflow={"hidden"}
+        <Box
+          sx={{
+            flexGrow: 0.5,
+          }}
+        >
+          <Box
             sx={{
-              borderRadius: "25px 25px 0 0",
-              //   gap: 2,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
             }}
           >
             <Box
-              component="img"
               sx={{
-                height: 40,
-                width: 40,
-                maxHeight: { xs: 40 },
-                maxWidth: { xs: 40 },
-                ml: 2,
-                mt: 1,
-                p: 1,
+                display: "flex",
               }}
-              alt="job_logo"
-              src={job?.profile_url !== "No URL" ? job?.profile_url : job_logo}
-            />
+            >
+              {job?.job_type === "crayon recruit" ? (
+                <SmallButton
+                  color="yellowButton100"
+                  label={job?.job_type?.slice(6)}
+                  mr={1}
+                />
+              ) : job?.job_type === "crayon lite" ? (
+                <SmallButton
+                  color="orangeButton"
+                  label={job?.job_type?.slice(6)}
+                  mr={1}
+                />
+              ) : null}
+              {job?.stage?.name && (
+                <SmallButton
+                  color="lightGreenButton300"
+                  mr={1}
+                  label={job?.stage?.name}
+                />
+              )}
+            </Box>
+
             <Box
               sx={{
-                flexGrow: 1,
+                display: "flex",
               }}
             >
               <Box
                 sx={{
+                  height: 43,
+                  width: 50,
+                  maxHeight: { xs: 43 },
+                  maxWidth: { xs: 50 },
+                  borderRadius: "0 0 0 10px",
+                  background: theme.palette.purpleButton300.main,
                   display: "flex",
+                  justifyContent: "center",
                   alignItems: "center",
-                  justifyContent: "space-between",
                 }}
               >
                 <Box
+                  component="img"
                   sx={{
-                    display: "flex",
+                    height: 25,
+                    width: 25,
+                    maxHeight: { xs: 25 },
+                    maxWidth: { xs: 25 },
                   }}
-                >
-                  {job?.job_type === "crayon recruit" ? (
-                    <SmallButton
-                      color="yellowButton100"
-                      label={job?.job_type?.slice(6)}
-                      mr={1}
-                    />
-                  ) : job?.job_type === "crayon lite" ? (
-                    <SmallButton
-                      color="orangeButton"
-                      label={job?.job_type?.slice(6)}
-                      mr={1}
-                    />
-                  ) : null}
-                  {job?.stage?.name && (
-                    <SmallButton
-                      color="lightGreenButton300"
-                      mr={1}
-                      label={job?.stage?.name}
-                    />
-                  )}
-                </Box>
+                  alt="job_volume"
+                  src={job_volume}
+                  onClick={handleClick}
+                />
+              </Box>
 
-                <Box
-                  sx={{
-                    display: "flex",
-                  }}
-                >
+              <Button
+                color="grayButton200"
+                onClick={() =>
+                  decodedToken?.data?.role_id === "undefined"
+                    ? handleClick
+                    : handleStar(job?.job_id)
+                }
+                sx={{
+                  height: "auto",
+                  minWidth: 50,
+                  background: "#c9c9c9",
+                  borderRadius: 0,
+                  padding: 0,
+                }}
+              >
+                <StarRoundedIcon color={isStar ? "error" : "disabled"} />
+              </Button>
+              {/* {isStar ? (
                   <Box
+                    component="img"
                     sx={{
                       height: 43,
                       width: 50,
                       maxHeight: { xs: 43 },
                       maxWidth: { xs: 50 },
-                      borderRadius: "0 0 0 10px",
-                      background: theme.palette.purpleButton300.main,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
                     }}
-                  >
-                    <Box
-                      component="img"
-                      sx={{
-                        height: 25,
-                        width: 25,
-                        maxHeight: { xs: 25 },
-                        maxWidth: { xs: 25 },
-                      }}
-                      alt="job_volume"
-                      src={job_volume}
-                      onClick={handleClick}
-                    />
-                  </Box>
-
-                  {isStar ? (
-                    <Box
-                      component="img"
-                      sx={{
-                        height: 43,
-                        width: 50,
-                        maxHeight: { xs: 43 },
-                        maxWidth: { xs: 50 },
-                      }}
-                      alt="job_star_selected"
-                      src={job_star_selected}
-                      onClick={() =>
-                        decodedToken?.data?.role_id === "undefined"
-                          ? handleClick
-                          : handleStar(job?.job_id)
-                      }
-                    />
-                  ) : (
-                    <Box
-                      component="img"
-                      sx={{
-                        height: 43,
-                        width: 50,
-                        maxHeight: { xs: 43 },
-                        maxWidth: { xs: 50 },
-                        borderRadius: 0,
-                      }}
-                      alt="job_star"
-                      src={job_star}
-                      onClick={() =>
-                        decodedToken?.data?.role_id === "undefined"
-                          ? handleClick
-                          : handleStar(job?.job_id)
-                      }
-                    />
-                  )}
-                </Box>
-              </Box>
-              <Typography
-                sx={{
-                  fontWeight: 400,
-                  fontSize: 12,
-                  letterSpacing: "0.75px",
-                  opacity: 0.8,
-                  marginBottom: "8px",
-                }}
-              >
-                posted {convertDatetimeAgo(job?.updated_at)}
-              </Typography>
-            </Box>
-          </Grid>
-          <Box
-            sx={{
-              display: "flex",
-              width: "100%",
-              height: "280px",
-            }}
-          >
-            <Grid
-              marginLeft={1}
-              marginRight={1}
-              sx={{
-                flexGrow: 1,
-              }}
-            >
-              <Tooltip
-                arrow
-                // TransitionComponent={"Fade"}
-                // TransitionProps={{ timeout: 600 }}
-                title={job?.title}
-                placement="top"
-              >
-                <Typography
-                  sx={{
-                    // minHeight: "60px",
-                    fontWeight: 700,
-                    fontSize: 20,
-                    overflow: "hidden",
-                    display: "-webkit-box",
-                    WebkitBoxOrient: "vertical",
-                    WebkitLineClamp: 1,
-                  }}
-                  gutterBottom
-                  onClick={handleJobTitle}
-                >
-                  {job?.title}
-                </Typography>
-              </Tooltip>
-              <Box
-                sx={{
-                  display: "flex",
-                  flexDirection: "column",
-                  marginBottom: "12px",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "start",
-                    gap: 1,
-                  }}
-                >
-                  <AccountBalanceWalletIcon fontSize="string" color="primary" />
-                  <Typography
-                    sx={{
-                      fontWeight: 700,
-                      fontSize: 12,
-                      letterSpacing: "0.25px",
-                    }}
-                  >
-                    {job?.salary?.currency?.symbol}
-                    {formatCurrencyWithCommas(job?.salary?.max)} per month
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "start",
-                    gap: 1,
-                  }}
-                >
-                  <PlaceIcon fontSize="string" color="error" />
-                  <Typography
-                    sx={{
-                      fontWeight: 700,
-                      fontSize: 12,
-                      letterSpacing: "0.25px",
-                    }}
-                  >
-                    {job?.town?.name}, {job?.town?.region?.name}
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "start",
-                    gap: 1,
-                  }}
-                >
+                    alt="job_star_selected"
+                    src={job_star_selected}
+                    onClick={() =>
+                      decodedToken?.data?.role_id === "undefined"
+                        ? handleClick
+                        : handleStar(job?.job_id)
+                    }
+                  />
+                ) : (
                   <Box
                     component="img"
                     sx={{
-                      height: 16,
-                      width: 16,
-                      maxHeight: { xs: 15 },
-                      maxWidth: { xs: 15 },
+                      height: 43,
+                      width: 50,
+                      maxHeight: { xs: 43 },
+                      maxWidth: { xs: 50 },
+                      borderRadius: 0
                     }}
-                    alt="job_exp"
-                    src={job_exp}
-                  />
-                  <Typography
-                    sx={{
-                      fontWeight: 700,
-                      fontSize: 12,
-                      letterSpacing: "0.25px",
-                    }}
-                  >
-                    {job?.experience?.year} years Experience
-                  </Typography>
-                </Box>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "start",
-                    gap: 1,
-                  }}
-                >
-                  <CalendarMonthIcon fontSize="string" color="warning" />
-                  <Typography
-                    sx={{
-                      fontWeight: 700,
-                      fontSize: 12,
-                      letterSpacing: "0.25px",
-                    }}
-                  >
-                    {dateConverterMonth(job?.created_at)}
-                  </Typography>
-                </Box>
-              </Box>
-              <Box sx={{ mb: 1 }}>
-                {personalityArrSlider.map((item, index) => {
-                  if (item != "") {
-                    return (
-                      <SmallButton
-                        color={"blueButton700"}
-                        height={25}
-                        // label={item?.industry ? item?.industry?.name : item}
-                        value={item}
-                        label={item}
-                        mr="4px"
-                      />
-                    );
-                  }
-                })}
-              </Box>
-              <Box
-                sx={
-                  job?.industry_jobs.length <= 1 &&
-                  job?.type !== "" &&
-                  job?.work_setup !== ""
-                    ? {
-                        width: "100%",
-                        display: "flex",
-                      }
-                    : {
-                        width: "100%",
-                        display: "flex",
-                        overflow: "hidden",
-                      }
-                }
-              >
-                {arrSlider
-                  .filter(
-                    (item) => item !== null || item?.industry?.name !== null
-                  )
-                  .map((item, index) => {
-                    if (item !== "") {
-                      return (
-                        <SmallButton
-                          color={
-                            item?.industry?.name ? "blueButton600" : item === ""
-                          }
-                          height={25}
-                          // label={item?.industry ? item?.industry?.name : item}
-                          value={item?.industry?.name}
-                          label={
-                            item?.industry
-                              ? item?.industry?.name?.split(/\s|\/+/)[0]
-                              : item
-                          }
-                          mr="4px"
-                        />
-                      );
+                    alt="job_star"
+                    src={job_star}
+                    onClick={() =>
+                      decodedToken?.data?.role_id === "undefined"
+                        ? handleClick
+                        : handleStar(job?.job_id)
                     }
-                  })}
-              </Box>
-
-              <TextWrapper
-                mt="12px"
-                mb={1}
-                color={theme.palette.black100}
-                letterSpacing="0.25px"
-              >
-                <Box
-                  // letterSpacing="0.25px"
-                  className="preview"
-                  m={0}
-                  p={0}
-                  dangerouslySetInnerHTML={createMarkup(job?.description)}
-                ></Box>
-              </TextWrapper>
-            </Grid>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "end",
-              }}
-            >
-              <Button
-                variant="contained"
-                color="redButton"
-                sx={{
-                  width: "100%",
-                  height: 150,
-                  padding: 0,
-                  minWidth: "15px",
-                  marginBottom: 2,
-                  fontSize: "20px",
-                  borderRadius: "5px 0 0 5px",
-                }}
-                onClick={() => setisFlipped(true)}
-              >
-                <NavigateNextIcon
-                  sx={{
-                    margin: 0,
-                    padding: 0,
-                  }}
-                  fontSize="string"
-                />
-                {/* &#62; */}
-              </Button>
+                  />
+                )} */}
             </Box>
           </Box>
-          {/* <Grid
+          <Typography
+            sx={{
+              fontWeight: 400,
+              fontSize: 12,
+              letterSpacing: "0.75px",
+              opacity: 0.8,
+              marginBottom: "8px",
+            }}
+          >
+            posted {convertDatetimeAgo(job?.updated_at)}
+          </Typography>
+        </Box>
+      </Grid >
+      <Box
+        sx={{
+          display: "flex",
+          width: "100%",
+          height: "280px",
+        }}
+      >
+        <Grid
+          paddingTop={0}
+          marginLeft={1}
+          marginRight={1}
+          sx={{
+            flexGrow: 1,
+          }}
+        >
+          <Tooltip
+            arrow
+            // TransitionComponent={"Fade"}
+            // TransitionProps={{ timeout: 600 }}
+            title={job?.title}
+            placement="top"
+          >
+            <Link
+              to={`/jobs/job-detail/${`${job?.town?.name + " " + job?.town?.region?.name
+                }`}/${job?.job_id}`}
+              target={"_blank"}
+              style={{
+                textDecoration: "none",
+                color: theme.palette.black,
+              }}
+            >
+              <Typography
+                sx={{
+                  // minHeight: "60px",
+                  fontWeight: 700,
+                  fontSize: 20,
+                  overflow: "hidden",
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: 1,
+                }}
+                gutterBottom
+              // onClick={handleJobTitle}
+              >
+                {job?.title}
+              </Typography>
+            </Link>
+          </Tooltip>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "12px",
+            }}
+          >
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+              <AccountBalanceWalletIcon fontSize="string"
+                color="primary" />
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  fontSize: 12,
+                  letterSpacing: "0.25px",
+                }}
+              >
+                {job?.salary?.currency?.symbol}
+                {formatCurrencyWithCommas(job?.salary?.max)} per month
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+              <PlaceIcon fontSize="string" color="error" />
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  fontSize: 12,
+                  letterSpacing: "0.25px",
+                }}
+              >
+                {job?.town?.name}, {job?.town?.region?.name}
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+              <Box
+                component="img"
+                sx={{
+                  height: 16,
+                  width: 16,
+                  maxHeight: { xs: 15 },
+                  maxWidth: { xs: 15 },
+                }}
+                alt="job_exp"
+                src={job_exp}
+              />
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  fontSize: 12,
+                  letterSpacing: "0.25px",
+                }}
+              >
+                {job?.experience?.year} years Experience
+              </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "center", justifyContent: "start", gap: 1 }}>
+              <CalendarMonthIcon fontSize="string" color="warning" />
+
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  fontSize: 12,
+                  letterSpacing: "0.25px",
+                }}
+              >
+                {dateConverterMonth(job?.created_at)}
+              </Typography>
+            </Box>
+          </Box>
+          <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1
+          }}>
+            <Slider2 items={[
+              job?.type,
+              job?.work_setup,
+            ]} color={"blueButton700"} hideTagsAfter={2} />
+            <Slider2 items={jobIndustries} color={"blueButton600"} hideTagsAfter={2} />
+          </Box>
+
+          <TextWrapper
+            mt="12px"
+            mb={1}
+            color={theme.palette.black100}
+            letterSpacing="0.25px"
+          >
+            <Box
+              // letterSpacing="0.25px"
+              sx={{
+                background: "transparent"
+              }}
+              className="preview"
+              m={0}
+              p={0}
+              dangerouslySetInnerHTML={createMarkup(job?.description)}
+            ></Box>
+          </TextWrapper>
+        </Grid>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "end",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="redButton"
+            sx={{
+              width: "100%",
+              height: 150,
+              padding: 0,
+              minWidth: "15px",
+              marginBottom: 2,
+              fontSize: "20px",
+              borderRadius: "5px 0 0 5px",
+            }}
+            onClick={() => setisFlipped(true)}
+          >
+            <NavigateNextIcon
+              sx={{
+                margin: 0,
+                padding: 0,
+              }}
+              fontSize="string"
+            />
+            {/* &#62; */}
+          </Button>
+        </Box>
+      </Box>
+      {/* <Grid
                 container
                 spacing={2}
                 padding="0 8px 8px 0px"
@@ -643,57 +561,57 @@ const JobCardFront = ({
                 ) : null}
             </Grid> */}
 
-          <Grid
-            container
-            spacing={2}
-            padding="0 16px 8px 16px"
-            justifyContent="space-around"
-          >
-            <Box sx={{ margin: "0 -22px 0 -22px" }}>
-              <SingleRadialChart
-                max={1000}
-                labelsData={label1}
-                series={[job?.TotalUserCount]}
-                width={140}
-                color={theme.palette.chart.red}
-                index={index}
-                isHovered={isHovered}
-              />
-            </Box>
-            <Box sx={{ margin: "0 -22px 0 -22px" }}>
-              <SingleRadialChart
-                labelsData={label2}
-                series={[job?.TotalUserShorlisted]}
-                width={140}
-                color={theme.palette.chart.green}
-                index={index}
-                isHovered={isHovered}
-              />
-            </Box>
-            <Box sx={{ margin: "0 -22px 0 -22px" }}>
-              <SingleRadialChart
-                labelsData={label3}
-                series={[job?.TotalUserInterviewed]}
-                width={140}
-                color={theme.palette.chart.yellow}
-                index={index}
-                isHovered={isHovered}
-              />
-            </Box>
-          </Grid>
-          <Grid
-            container
-            // padding="0 8px 8px 8px"
-            alignItems="center"
-            overflow={"hidden"}
-            sx={{
-              // background: "green",
-              width: "100%",
-              borderRadius: "0 0 25px 25px",
-              height: 50,
-            }}
-          >
-            {/* <Box
+      <Grid
+        container
+        spacing={2}
+        padding="0 16px 8px 16px"
+        justifyContent="space-around"
+      >
+        <Box sx={{ margin: "0 -22px 0 -22px" }}>
+          <SingleRadialChart
+            max={1000}
+            labelsData={label1}
+            series={[job?.TotalUserCount]}
+            width={140}
+            color={theme.palette.chart.red}
+            index={index}
+            isHovered={isHovered}
+          />
+        </Box>
+        <Box sx={{ margin: "0 -22px 0 -22px" }}>
+          <SingleRadialChart
+            labelsData={label2}
+            series={[job?.TotalUserShorlisted]}
+            width={140}
+            color={theme.palette.chart.green}
+            index={index}
+            isHovered={isHovered}
+          />
+        </Box>
+        <Box sx={{ margin: "0 -22px 0 -22px" }}>
+          <SingleRadialChart
+            labelsData={label3}
+            series={[job?.TotalUserInterviewed]}
+            width={140}
+            color={theme.palette.chart.yellow}
+            index={index}
+            isHovered={isHovered}
+          />
+        </Box>
+      </Grid>
+      <Grid
+        container
+        // padding="0 8px 8px 8px"
+        alignItems="center"
+        overflow={"hidden"}
+        sx={{
+          background: "green",
+          width: "100%",
+          borderRadius: "0 0 25px 25px",
+          height: 50,
+        }}
+      >
+        {/* <Box
                     sx={{
                         height: 43,
                         width: 43,
@@ -733,47 +651,59 @@ const JobCardFront = ({
                         {i18n["jobCard.apply"]}
                     </Button>
                 </Grid> */}
-            <Button
-              variant="contained"
-              sx={{
-                borderRadius: 0,
-                width: "33.33%",
-                height: "100%",
-                fontSize: "12px",
-              }}
-              color="blueButton200"
-            >
-              Match me
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                borderRadius: 0,
-                width: "33.33%",
-                height: "100%",
-                fontSize: "12px",
-              }}
-              color="grayButton200"
-            >
-              View More
-            </Button>
-            <Button
-              variant="contained"
-              sx={{
-                borderRadius: 0,
-                width: "33.33%",
-                height: "100%",
-                fontSize: "12px",
-              }}
-              color="redButton"
-              onClick={handleClick}
-            >
-              apply
-            </Button>
-          </Grid>
-        </>
-      )}
-    </CustomCard>
+        <Button
+          variant="contained"
+          sx={{
+            borderRadius: 0,
+            width: "33.33%",
+            height: "100%",
+            fontSize: "12px",
+          }}
+          color="blueButton200"
+        >
+          Match me
+        </Button>
+        <Link
+          to={`/jobs/job-detail/${`${job?.town?.name + " " + job?.town?.region?.name
+            }`}/${job?.job_id}`}
+          target={"_blank"}
+          style={{
+            textDecoration: "none",
+            color: theme.palette.black,
+            width: "33.33%",
+            height: "100%",
+          }}
+        >
+
+          <Button
+            variant="contained"
+            sx={{
+              borderRadius: 0,
+              fontSize: "12px",
+              height: "100%",
+              width: "100%"
+            }}
+            color="grayButton200"
+          >
+            View More
+          </Button>
+        </Link>
+
+        <Button
+          variant="contained"
+          sx={{
+            borderRadius: 0,
+            width: "33.33%",
+            height: "100%",
+            fontSize: "12px",
+          }}
+          color="redButton"
+          onClick={handleClick}
+        >
+          apply
+        </Button>
+      </Grid>
+    </CustomCard >
   );
 };
 

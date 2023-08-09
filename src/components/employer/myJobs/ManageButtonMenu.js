@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import locale from "../../../i18n/locale";
 import { alpha, styled } from "@mui/material/styles";
 import Menu from "@mui/material/Menu";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import Typography from "@mui/material/Typography";
 import { IconButton } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -24,29 +24,44 @@ import SmallButton from "../../common/SmallButton";
 import Modal from "@mui/material/Modal";
 import { useNavigate } from "react-router-dom";
 
+import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import PauseIcon from '@mui/icons-material/Pause';
+import CloseIcon from '@mui/icons-material/Close';
+import FilterNoneIcon from '@mui/icons-material/FilterNone';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { RemoveRedEyeOutlined } from "@mui/icons-material";
+
 const StyledMenu = styled((props) => (
   <Menu
     elevation={4}
-    anchorOrigin={{
-      vertical: "bottom",
-      horizontal: "right",
-    }}
+    // anchorOrigin={{
+    //   vertical: "bottom",
+    //   horizontal: "right",
+    // }}
     // transformOrigin={{
     //     vertical: 'top',
     //     horizontal: 'right',
     // }}
+    anchorOrigin={{
+      vertical: 'top',
+      horizontal: 'left',
+    }}
+    transformOrigin={{
+      vertical: 'bottom',
+      horizontal: 'left',
+    }}
     {...props}
   />
 ))(({ theme }) => ({
   "& .MuiPaper-root": {
     borderRadius: 5,
-    minWidth: 260,
+    // minWidth: 260,
     color:
       theme.palette.mode === "light"
         ? "rgb(55, 65, 81)"
         : theme.palette.grey[300],
     backgroundColor: theme.palette.menuBackground,
-    padding: "8px 8px 8px 8px",
+
     "& .MuiList-root": {
       paddingTop: 0,
     },
@@ -299,9 +314,9 @@ const ManageButtonMenu = ({ job }) => {
         variant="contained"
         elevation={0}
         onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
-        color="blueButton400"
-        sx={{ boxShadow: 0, width: "100%", height: "43px" }}
+        startIcon={<KeyboardArrowUpIcon />}
+        color="grayButton100"
+        sx={{ boxShadow: 0, width: "100%", height: "50px", borderRadius: 0 }}
       >
         {i18n["manageJob.manage"]}
       </Button>
@@ -314,7 +329,7 @@ const ManageButtonMenu = ({ job }) => {
         open={open}
         onClose={handleClose}
       >
-        <Box>
+        {/* <Box>
           <Typography
             sx={{
               fontWeight: 700,
@@ -347,18 +362,21 @@ const ManageButtonMenu = ({ job }) => {
           >
             Job actions:
           </Typography>
-        </Box>
-        <Box sx={{ display: "flex", flexDirection: "column" }}>
+        </Box> */}
+        <Box sx={{ display: "flex", flexDirection: "column", padding: 0, boxShadow: 0 }}>
           <Button
             sx={{
               boxShadow: 0,
               fontSize: "12px",
               height: "38px",
-              borderRadius: "10px",
+              borderRadius: 0,
+              padding: "20px 8px",
+              justifyContent: "start"
             }}
             onClick={() => handleOpen2("a")}
-            variant="outlined"
-            color="lightBlueJobButton300"
+            variant="contained"
+            startIcon={<EditOutlinedIcon />}
+            color="grayButton100"
           >
             {i18n["manageJob.editJob"]}
           </Button>
@@ -368,13 +386,15 @@ const ManageButtonMenu = ({ job }) => {
                 boxShadow: 0,
                 fontSize: "12px",
                 height: "38px",
-                borderRadius: "10px",
-                mt: 1,
+                borderRadius: 0,
+                padding: "20px 8px",
+                justifyContent: "start"
+                
               }}
               onClick={() => handleOpen2("e")}
-              variant="outlined"
-              color="lightBlueJobButton300"
-            >
+              variant="contained"
+              color="grayButton100"
+              >
               {i18n["manageJob.reactivateJob"]}
             </Button>
           ) : (
@@ -383,12 +403,15 @@ const ManageButtonMenu = ({ job }) => {
                 boxShadow: 0,
                 fontSize: "12px",
                 height: "38px",
-                borderRadius: "10px",
-                mt: 1,
+                borderRadius: 0,
+                padding: "20px 8px",
+                justifyContent: "start"
+                
               }}
+              startIcon={<PauseIcon/>}
               onClick={() => handleOpen2("b")}
-              variant="outlined"
-              color="lightBlueJobButton300"
+              variant="contained"
+              color="grayButton100"
             >
               {i18n["manageJob.pauseJob"]}
             </Button>
@@ -399,12 +422,15 @@ const ManageButtonMenu = ({ job }) => {
               boxShadow: 0,
               fontSize: "12px",
               height: "38px",
-              borderRadius: "10px",
-              mt: 1,
+              borderRadius: 0,
+              padding: "20px 8px",
+              justifyContent: "start"
+              
             }}
             onClick={() => handleOpen2("c")}
-            variant="outlined"
-            color="lightBlueJobButton300"
+            variant="contained"
+            color="grayButton100"
+            startIcon={<CloseIcon />}
           >
             {i18n["manageJob.closeJob"]}
           </Button>
@@ -413,12 +439,16 @@ const ManageButtonMenu = ({ job }) => {
               boxShadow: 0,
               fontSize: "12px",
               height: "38px",
-              borderRadius: "10px",
-              mt: 1,
+              borderRadius: 0,
+              padding: "20px 8px",
+              justifyContent: "start"
+              
             }}
-            variant="outlined"
-            color="lightBlueJobButton300"
+            variant="contained"
+            color="grayButton100"
             onClick={() => handleOpen2("d")}
+            startIcon={<FilterNoneIcon />}
+
           >
             {i18n["manageJob.duplicateJob"]}
           </Button>
@@ -440,11 +470,11 @@ const ManageButtonMenu = ({ job }) => {
                 <Button
                   sx={{
                     height: "38px",
-                    mt: 1,
+                    
                     mr: 2,
                   }}
                   variant="contained"
-                  color="lightBlueJobButton300"
+                  color="grayButton100"
                   onClick={handleJobStatus}
                 >
                   YES
@@ -452,7 +482,7 @@ const ManageButtonMenu = ({ job }) => {
                 <Button
                   sx={{
                     height: "38px",
-                    mt: 1,
+                    
                     mr: 2,
                   }}
                   onClick={handleClose2}
@@ -464,6 +494,24 @@ const ManageButtonMenu = ({ job }) => {
               </Box>
             </Box>
           </Modal>
+          <Button
+            sx={{
+              boxShadow: 0,
+              fontSize: "12px",
+              height: "38px",
+              borderRadius: 0,
+              padding: "20px 8px",
+              justifyContent: "start"
+              
+            }}
+            // onClick={() => handleOpen2("c")}
+            variant="contained"
+            color="grayButton100"
+            startIcon={<RemoveRedEyeOutlined />}
+
+          >
+            View Job
+          </Button>
         </Box>
       </StyledMenu>
     </>

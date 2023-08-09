@@ -1,29 +1,15 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
-import job_logo from "../../../../assets/job_logo.svg";
 import profile from "../../../../assets/profile.png";
-import job_volume from "../../../../assets/job_volume.svg";
-import job_star from "../../../../assets/job_star.svg";
-import job_star_selected from "../../../../assets/job_star_selected.svg";
 import job_exp from "../../../../assets/job_exp.png";
-import job_apply from "../../../../assets/job_apply.svg";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import StarIcon from "@mui/icons-material/Star";
 import Typography from "@mui/material/Typography";
-import locale from "../../../../i18n/locale";
-import { CARD_RIGHT_BUTTON_GROUP } from "../../../../utils/Constants";
-import Tooltip from "@mui/material/Tooltip";
-import Fade from "@mui/material/Fade";
 import SingleRadialChart from "../../../common/SingleRadialChart";
 import SmallButton from "../../../common/SmallButton";
 import CustomCard from "../../../common/CustomCard";
 import PlaceIcon from "@mui/icons-material/Place";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
 import TextWrapper from "../../../common/TextWrapper";
 import {
   convertDatetimeAgo,
@@ -39,23 +25,20 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
+import Slider2 from "../../../common/Slider2";
 const label1 = "applications";
 const label2 = "shortlisting";
 const label3 = "interviews";
 export default function TalentCard({ index, job, setisFlipped }) {
-  const i18n = locale.en;
   const dispatch = useDispatch();
   const theme = useTheme();
-  const [colorKey, setColorKey] = useState("color");
-  const [chartData1, setChartData1] = useState([job?.TotalUserCount]);
-  const [chartData2, setChartData2] = useState([job?.TotalUserShorlisted]);
-  const [chartData3, setChartData3] = useState([job?.TotalUserInterviewed]);
   const [isHovered, setIsHovered] = useState(false);
   const [isStar, setIsStarSelected] = useState(job?.favourite);
 
   const [arrSlider, setArrSlider] = useState(
     job?.candidate_profile?.industry_users
   );
+  const jobIndustries = job?.candidate_profile?.industry_users.map(industry => industry?.industry?.name)
 
   const [personalityArrSlider, setPersonalityArrSlider] = useState([
     job?.candidate_profile?.candidate_info?.employment_type,
@@ -74,22 +57,6 @@ export default function TalentCard({ index, job, setisFlipped }) {
     decodedToken = jwt_decode(token);
   }
 
-  const handleRightClick = () => {
-    setArrSlider2([...arrSlider2.slice(1), ...arrSlider2.slice(0, 1)]);
-  };
-  const handleLeftClick = () => {
-    setArrSlider2([
-      ...arrSlider2.slice(arrSlider2.length - 1),
-      ...arrSlider2.slice(0, arrSlider2.length - 1),
-    ]);
-  };
-
-  const handleHoverEnter = () => {
-    setColorKey("hover");
-  };
-  const handleHoverLeave = () => {
-    setColorKey("color");
-  };
   const handleStar = async () => {
     setIsStarSelected(!isStar);
     decodedToken?.data?.role_id == 4 &&
@@ -230,7 +197,7 @@ export default function TalentCard({ index, job, setisFlipped }) {
               />
             )} */}
               <Button
-                color="grayButton300"
+                color="grayButton100"
                 onClick={handleStar}
                 sx={{
                   // height: "auto",
@@ -288,6 +255,7 @@ export default function TalentCard({ index, job, setisFlipped }) {
           sx={{
             flexGrow: 1,
           }}
+          paddingTop={0}
         >
           <Link
             to={`/candidate-cv/${job?.user_id}`}
@@ -297,11 +265,11 @@ export default function TalentCard({ index, job, setisFlipped }) {
               color: theme.palette.black,
             }}
           >
-            <TextWrapper line={1} weight={700} size={20} minHeight={30}>
+            <TextWrapper line={1} weight={700} size={20} gutterBottom={false}>
               {job?.first_name}
             </TextWrapper>
           </Link>
-          <TextWrapper line={1} weight={700} size={20} minHeight={30}>
+          <TextWrapper line={1} weight={700} size={20} gutterBottom={true}>
             {job?.candidate_profile?.candidate_info?.job_title?.title}
           </TextWrapper>
           <Box
@@ -339,14 +307,7 @@ export default function TalentCard({ index, job, setisFlipped }) {
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {/* <IconButton
-              sx={{ padding: 0, marginLeft: "-5px", marginRight: "4px" }}
-              color="redButton100"
-              aria-label="search job"
-              component="button"
-            > */}
               <PlaceIcon fontSize="string" color="error" />
-              {/* </IconButton> */}
 
               <Typography
                 sx={{
@@ -385,14 +346,8 @@ export default function TalentCard({ index, job, setisFlipped }) {
             </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {/* <IconButton
-              sx={{ padding: 0, marginLeft: "-5px", marginRight: "4px" }}
-              color="redButton100"
-              aria-label="search job"
-              component="button"
-            > */}
+
               <CalendarMonthIcon fontSize="string" color="warning" />
-              {/* </IconButton> */}
               <Typography
                 sx={{
                   fontWeight: 700,
@@ -443,8 +398,12 @@ export default function TalentCard({ index, job, setisFlipped }) {
                     </Typography> 
         </Box>*/}
 
-          <Box sx={{ mb: 1 }}>
-            {personalityArrSlider.map((item, index) => {
+          <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1
+          }}>
+            {/* {personalityArrSlider.map((item, index) => {
               if (item != "") {
                 return (
                   <SmallButton
@@ -457,22 +416,26 @@ export default function TalentCard({ index, job, setisFlipped }) {
                   />
                 );
               }
-            })}
+            })} */}
+            
+            <Slider2 items={["full time", "remote"]} color={"blueButton700"} hideTagsAfter={2} />
+            <Slider2 items={jobIndustries} color={"blueButton600"} hideTagsAfter={2} />
+
           </Box>
 
-          <Box
+          {/* <Box
             sx={
               job?.candidate_profile?.industry_users.length <= 1
                 ? {
-                    width: "100%",
-                    display: "flex",
-                    overflow: "hidden",
-                  }
+                  width: "100%",
+                  display: "flex",
+                  overflow: "hidden",
+                }
                 : {
-                    width: "100%",
-                    display: "flex",
-                    overflow: "hidden",
-                  }
+                  width: "100%",
+                  display: "flex",
+                  overflow: "hidden",
+                }
             }
           >
             {arrSlider
@@ -497,7 +460,7 @@ export default function TalentCard({ index, job, setisFlipped }) {
                   );
                 }
               })}
-          </Box>
+          </Box> */}
 
           <TextWrapper
             mt="12px"
@@ -617,7 +580,7 @@ export default function TalentCard({ index, job, setisFlipped }) {
             fontSize: "12px",
           }}
           color="redButton"
-          // onClick={handleClick}
+        // onClick={handleClick}
         >
           apply
         </Button>

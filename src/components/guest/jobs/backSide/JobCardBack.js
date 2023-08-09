@@ -2,16 +2,11 @@ import { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import job_logo from "../../../../assets/job_logo.svg";
 import job_volume from "../../../../assets/job_volume.svg";
-import job_star from "../../../../assets/job_star.svg";
-import job_star_selected from "../../../../assets/job_star_selected.svg";
 import job_exp from "../../../../assets/job_exp.png";
-import job_apply from "../../../../assets/job_apply.svg";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Unstable_Grid2";
 import Button from "@mui/material/Button";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import locale from "../../../../i18n/locale";
 import {
   getAllQuestions,
   getAllQuestionsWithoutLogin,
@@ -22,20 +17,17 @@ import SingleRadialChart from "../../../common/SingleRadialChart";
 import SmallButton from "../../../common/SmallButton";
 import CustomCard from "../../../common/CustomCard";
 import PlaceIcon from "@mui/icons-material/Place";
-import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import KeyboardArrowRightIcon from "@mui/icons-material/KeyboardArrowRight";
-import TextWrapper from "../../../common/TextWrapper";
 import {
   convertDatetimeAgo,
   dateConverterMonth,
 } from "../../../../utils/DateTime";
 import { useDispatch } from "react-redux";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { setAlert } from "../../../../redux/configSlice";
 import { favouriteJob } from "../../../../redux/guest/talentSlice";
 import jwt_decode from "jwt-decode";
 import { formatCurrencyWithCommas } from "../../../../utils/Currency";
-import DOMPurify from "dompurify";
+
 import KeyboardArrowLeftOutlinedIcon from "@mui/icons-material/KeyboardArrowLeftOutlined";
 import StarRoundedIcon from "@mui/icons-material/StarRounded";
 
@@ -43,13 +35,13 @@ import profile_challenger from "../../../../assets/Profile Icons_Challenger.svg"
 import profile_character from "../../../../assets/Profile Icons_Charater.svg";
 import profile_collaborator from "../../../../assets/Profile Icons_Collaborator.svg";
 import profile_contemplator from "../../../../assets/Profile Icons_Contemplator.svg";
-import { Hidden } from "@mui/material";
+
 import AccountBalanceWalletIcon from "@mui/icons-material/AccountBalanceWallet";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
-const label1 = "applied";
-const label2 = "shortlisted";
-const label3 = "interviewed";
+import Slider2 from "../../../common/Slider2";
+import Slider from "../../../common/Slider";
+
 
 const JobCardFront = ({
   index,
@@ -59,22 +51,15 @@ const JobCardFront = ({
   setopenApplyJobDialog,
   setisFlipped,
 }) => {
-  const i18n = locale.en;
   const theme = useTheme();
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isHovered, setIsHovered] = useState(false);
   const [isStar, setIsStarSelected] = useState(job?.favourite);
-  const [arrSlider, setArrSlider] = useState([
-    job?.industry_jobs[0],
-    job?.type,
-    job?.work_setup,
-  ]);
-  // console.log(job?.job_traits[0].trait?.name)
-  const [jobTagsArr, setJobTags] = useState([...(job?.job_tags || [])]);
-  const [arrSlider2, setArrSlider2] = useState([...(job?.job_traits || [])]);
-  const [toolsArr, setToolsArr] = useState([...(job?.job_tools || [])]);
+
+  const jobTags = job?.job_tags.map(tag => tag?.tag?.tag)
+  const jobTools = job?.job_tools.map(tool => tool?.tool?.name)
+  const jobTraits = job?.job_traits.map(trait => trait?.trait?.name)
 
   const token = localStorage?.getItem("token");
   let decodedToken;
@@ -137,24 +122,6 @@ const JobCardFront = ({
     }
   };
 
-  const handleRightClick = (setFunc, arrName) => {
-    setFunc([...arrName.slice(1), ...arrName.slice(0, 1)]);
-  };
-  const handleLeftClick = (setFunc, arrName) => {
-    setFunc([
-      ...arrName.slice(arrName.length - 1),
-      ...arrName.slice(0, arrName.length - 1),
-    ]);
-  };
-
-  const handleJobTitle = () => {
-    navigate(
-      `/jobs/job-detail/${`${
-        job?.town?.name + " " + job?.town?.region?.name
-      }`}/${job?.job_id}`
-    );
-  };
-
   return (
     <CustomCard
       handleMouseEnter={() => setIsHovered(true)}
@@ -182,13 +149,14 @@ const JobCardFront = ({
             ml: 2,
             mt: 1,
             p: 1,
+            borderRadius: 4
           }}
           alt="job_logo"
           src={job?.profile_url !== "No URL" ? job?.profile_url : job_logo}
         />
         <Box
           sx={{
-            flexGrow: 1,
+            flexGrow: 0.5,
           }}
         >
           <Box
@@ -258,7 +226,7 @@ const JobCardFront = ({
               </Box>
 
               <Button
-                color="grayButton"
+                color="grayButton200"
                 onClick={() =>
                   decodedToken?.data?.role_id === "undefined"
                     ? handleClick
@@ -274,42 +242,6 @@ const JobCardFront = ({
               >
                 <StarRoundedIcon color={isStar ? "error" : "disabled"} />
               </Button>
-              {/* {isStar ? (
-                                <Box
-                                    component="img"
-                                    sx={{
-                                        height: 43,
-                                        width: 50,
-                                        maxHeight: { xs: 43 },
-                                        maxWidth: { xs: 50 },
-                                    }}
-                                    alt="job_star_selected"
-                                    src={job_star_selected}
-                                    onClick={() =>
-                                        decodedToken?.data?.role_id === "undefined"
-                                            ? handleClick
-                                            : handleStar(job?.job_id)
-                                    }
-                                />
-                            ) : (
-                                // <Box
-                                //     component="img"
-                                //     sx={{
-                                //         height: 43,
-                                //         width: 50,
-                                //         maxHeight: { xs: 43 },
-                                //         maxWidth: { xs: 50 },
-                                //         borderRadius: 0
-                                //     }}
-                                //     alt="job_star"
-                                //     src={job_star}
-                                //     onClick={() =>
-                                //         decodedToken?.data?.role_id === "undefined"
-                                //             ? handleClick
-                                //             : handleStar(job?.job_id)
-                                //     }
-                                // />
-                            )} */}
             </Box>
           </Box>
           <Typography
@@ -336,6 +268,7 @@ const JobCardFront = ({
       >
         {/* Name and Info Section */}
         <Grid
+          paddingTop={0}
           marginLeft={1}
           marginRight={1}
           sx={{
@@ -344,26 +277,34 @@ const JobCardFront = ({
         >
           <Tooltip
             arrow
-            // TransitionComponent={"Fade"}
-            // TransitionProps={{ timeout: 600 }}
             title={job?.title}
             placement="top"
           >
-            <Typography
-              sx={{
-                // minHeight: "60px",
-                fontWeight: 700,
-                fontSize: 20,
-                overflow: "hidden",
-                display: "-webkit-box",
-                WebkitBoxOrient: "vertical",
-                WebkitLineClamp: 1,
+            <Link
+              to={`/jobs/job-detail/${`${job?.town?.name + " " + job?.town?.region?.name
+                }`}/${job?.job_id}`}
+              target={"_blank"}
+              style={{
+                textDecoration: "none",
+                color: theme.palette.black,
               }}
-              gutterBottom
-              onClick={handleJobTitle}
             >
-              {job?.title}
-            </Typography>
+
+              <Typography
+                sx={{
+                  fontWeight: 700,
+                  fontSize: 20,
+                  overflow: "hidden",
+                  display: "-webkit-box",
+                  WebkitBoxOrient: "vertical",
+                  WebkitLineClamp: 1,
+                }}
+                gutterBottom
+              // onClick={handleJobTitle}
+              >
+                {job?.title}
+              </Typography>
+            </Link>
           </Tooltip>
           <Box
             sx={{
@@ -460,246 +401,21 @@ const JobCardFront = ({
               </Typography>
             </Box>
           </Box>
-
-          {/* Tags section */}
-          <Grid
-            container
-            spacing={2}
-            padding="0 8px 8px 0px"
-            minHeight={45}
-            // mt={3}
-            sx={
-              jobTagsArr.length >= 3 && {
-                justifyContent: "space-evenly",
-                alignItems: "center",
-              }
-            }
-          >
-            {jobTagsArr.length >= 3 ? (
-              <IconButton
-                sx={{
-                  border: `1px solid ${theme.palette.grayBorder}`,
-                  borderRadius: "8px",
-                  width: "27px",
-                  height: "27px",
-                }}
-                color="redButton100"
-                aria-label="search job"
-                component="button"
-                onClick={() => handleLeftClick(setJobTags, jobTagsArr)}
-              >
-                <KeyboardArrowLeftIcon />
-              </IconButton>
-            ) : null}
-            <Box
-              sx={
-                job?.job_tags.length >= 3
-                  ? {
-                      width: "65%",
-                      display: "flex",
-                      overflow: "hidden",
-                    }
-                  : {
-                      width: "100%",
-                      display: "flex",
-                      overflow: "hidden",
-                    }
-              }
-            >
-              {jobTagsArr
-                .filter((item) => item !== null)
-                .map((item, index) => {
-                  if (item !== undefined) {
-                    return (
-                      <SmallButton
-                        color="yellowButton200"
-                        height={25}
-                        value={item?.tag?.tag}
-                        label={item?.tag?.tag.split(" ")[0]}
-                        mr="4px"
-                      />
-                    );
-                  }
-                })}
-            </Box>
-            {jobTagsArr.length >= 3 ? (
-              <IconButton
-                sx={{
-                  border: `1px solid ${theme.palette.grayBorder}`,
-                  borderRadius: "8px",
-                  width: "27px",
-                  height: "27px",
-                }}
-                color="redButton100"
-                aria-label="search job"
-                component="button"
-                onClick={() => handleRightClick(setJobTags, jobTagsArr)}
-              >
-                <KeyboardArrowRightIcon />
-              </IconButton>
-            ) : null}
-          </Grid>
-          {/* Tags section */}
-
-          {/* Tools Section */}
-          <Grid
-            container
-            spacing={2}
-            padding="0 8px 8px 0px"
-            minHeight={45}
-            // mt={3}
-            sx={
-              toolsArr.length >= 4
-                ? { justifyContent: "space-evenly", alignItems: "center" }
-                : { ml: 1 }
-            }
-          >
-            {toolsArr.length >= 4 ? (
-              <IconButton
-                sx={{
-                  border: `1px solid ${theme.palette.grayBorder}`,
-                  borderRadius: "8px",
-                  width: "27px",
-                  height: "27px",
-                }}
-                color="redButton100"
-                aria-label="search job"
-                component="button"
-                onClick={() => handleLeftClick(setToolsArr, toolsArr)}
-              >
-                <KeyboardArrowLeftIcon />
-              </IconButton>
-            ) : null}
-
-            <Box
-              sx={
-                job?.job_tools.length >= 4
-                  ? {
-                      width: "75%",
-                      display: "flex",
-                      overflow: "hidden",
-                    }
-                  : {
-                      width: "90%",
-                      display: "flex",
-                      overflow: "hidden",
-                      alignItems: "center",
-                    }
-              }
-            >
-              {toolsArr
-                .filter((item) => item !== null)
-                .map((item, index) => {
-                  if (item !== undefined) {
-                    return (
-                      <SmallButton
-                        color="yellowButton100"
-                        height={25}
-                        value={item?.tool?.name}
-                        label={item?.tool?.name.split(" ")[0]}
-                        mr="4px"
-                      />
-                    );
-                  }
-                })}
-            </Box>
-            {toolsArr.length >= 4 ? (
-              <IconButton
-                sx={{
-                  border: `1px solid ${theme.palette.grayBorder}`,
-                  borderRadius: "8px",
-                  width: "27px",
-                  height: "27px",
-                }}
-                color="redButton100"
-                aria-label="search job"
-                component="button"
-                onClick={() => handleRightClick(setToolsArr, toolsArr)}
-              >
-                <KeyboardArrowRightIcon />
-              </IconButton>
-            ) : null}
-          </Grid>
-          {/* Tools Section */}
-
-          {/* Trait Section */}
-          <Grid
-            container
-            spacing={2}
-            padding="0 8px 8px 0px"
-            minHeight={45}
-            // mt={3}
-            sx={
-              arrSlider2.length >= 4 && {
-                justifyContent: "space-evenly",
-                alignItems: "center",
-              }
-            }
-          >
-            {arrSlider2.length >= 4 ? (
-              <IconButton
-                sx={{
-                  border: `1px solid ${theme.palette.grayBorder}`,
-                  borderRadius: "8px",
-                  width: "27px",
-                  height: "27px",
-                }}
-                color="redButton100"
-                aria-label="search job"
-                component="button"
-                onClick={() => handleLeftClick(setArrSlider2, arrSlider2)}
-              >
-                <KeyboardArrowLeftIcon />
-              </IconButton>
-            ) : null}
-            <Box
-              sx={
-                job?.job_traits.length >= 4
-                  ? {
-                      width: "65%",
-                      display: "flex",
-                      overflow: "hidden",
-                    }
-                  : {
-                      width: "100%",
-                      display: "flex",
-                      overflow: "hidden",
-                    }
-              }
-            >
-              {arrSlider2
-                .filter((item) => item !== null)
-                .map((item, index) => {
-                  if (item !== undefined) {
-                    return (
-                      <SmallButton
-                        color={"grayButton200"}
-                        height={25}
-                        label={item?.trait?.name}
-                        mr="4px"
-                      />
-                    );
-                  }
-                })}
-            </Box>
-            {arrSlider2.length >= 4 ? (
-              <IconButton
-                sx={{
-                  border: `1px solid ${theme.palette.grayBorder}`,
-                  borderRadius: "8px",
-                  width: "27px",
-                  height: "27px",
-                }}
-                color="redButton100"
-                aria-label="search job"
-                component="button"
-                onClick={() => handleRightClick(setArrSlider2, arrSlider2)}
-              >
-                <KeyboardArrowRightIcon />
-              </IconButton>
-            ) : null}
-          </Grid>
-          {/* Trait Section */}
+          <Box sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 1
+          }}>
+            {/* Tags section */}
+            <Slider2 items={jobTags} color={"yellowButton200"} hideTagsAfter={2} />
+            {/* Tags section */}
+            {/* Tools Section */}
+            <Slider2 items={jobTools} color={"yellowButton100"} hideTagsAfter={2} />
+            {/* Tools Section */}
+            {/* Trait Section */}
+            <Slider items={jobTraits} color={"grayButton200"} theme={theme} />
+            {/* Trait Section */}
+          </Box>
         </Grid>
         {/* Name and Info Section */}
         {/* flip Button */}
@@ -753,33 +469,30 @@ const JobCardFront = ({
             isHovered={isHovered}
           />
         </Box>
-        {/* <Box sx={{ margin: "0 -22px 0 -22px" }}> */}
         {job?.primary?.name && (
           <Box
             component="img"
             height={90}
-            // sx={{ margin: "0 -22px 0 -22px" }}
             alt="job_exp"
             src={
-              (job?.primary?.name == "collaborator" && profile_collaborator) ||
-              (job?.primary?.name == "challenger" && profile_challenger) ||
-              (job?.primary?.name == "character" && profile_character) ||
-              (job?.primary?.name == "contemplator" && profile_contemplator)
+              (job?.primary?.name === "collaborator" && profile_collaborator) ||
+              (job?.primary?.name === "challenger" && profile_challenger) ||
+              (job?.primary?.name === "character" && profile_character) ||
+              (job?.primary?.name === "contemplator" && profile_contemplator)
             }
           />
         )}
         {/* </Box> */}
-        {job?.primary?.name && (
+        {job?.shadow?.name && (
           <Box
             component="img"
             height={90}
-            // sx={{ margin: "0 -22px 0 -22px" }}
             alt="job_exp"
             src={
-              (job?.shadow?.name == "collaborator" && profile_collaborator) ||
-              (job?.shadow?.name == "challenger" && profile_challenger) ||
-              (job?.shadow?.name == "character" && profile_character) ||
-              (job?.shadow?.name == "contemplator" && profile_contemplator)
+              (job?.shadow?.name === "collaborator" && profile_collaborator) ||
+              (job?.shadow?.name === "challenger" && profile_challenger) ||
+              (job?.shadow?.name === "character" && profile_character) ||
+              (job?.shadow?.name === "contemplator" && profile_contemplator)
             }
           />
         )}
@@ -798,46 +511,6 @@ const JobCardFront = ({
           height: 50,
         }}
       >
-        {/* <Box
-                    sx={{
-                        height: 43,
-                        width: 43,
-                        maxHeight: { xs: 43 },
-                        maxWidth: { xs: 43 },
-                        borderRadius: "6px",
-                        background: theme.palette.chart.yellow,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                    }}
-                >
-                    <Box
-                        component="img"
-                        sx={{
-                            height: 25,
-                            width: 25,
-                            maxHeight: { xs: 25 },
-                            maxWidth: { xs: 25 },
-                        }}
-                        alt="job_apply"
-                        src={job_apply}
-                    />
-                </Box>
-                <Grid sx={{ width: "33.33%", padding: 0, ml: 1 }}>
-                    <Button
-                        sx={{
-                            boxShadow: 0,
-                            fontSize: "12px",
-                            width: "100%",
-                            height: "43px",
-                        }}
-                        variant="contained"
-                        color="redButton100"
-                        onClick={handleClick}
-                    >
-                        {i18n["jobCard.apply"]}
-                    </Button>
-                </Grid> */}
         <Button
           variant="contained"
           sx={{
@@ -850,18 +523,31 @@ const JobCardFront = ({
         >
           Match me
         </Button>
-        <Button
-          variant="contained"
-          sx={{
-            borderRadius: 0,
+        <Link
+          to={`/jobs/job-detail/${`${job?.town?.name + " " + job?.town?.region?.name
+            }`}/${job?.job_id}`}
+          target={"_blank"}
+          style={{
+            textDecoration: "none",
+            color: theme.palette.black,
             width: "33.33%",
             height: "100%",
-            fontSize: "12px",
           }}
-          color="grayButton200"
         >
-          View More
-        </Button>
+
+          <Button
+            variant="contained"
+            sx={{
+              borderRadius: 0,
+              fontSize: "12px",
+              height: "100%",
+              width: "100%"
+            }}
+            color="grayButton200"
+          >
+            View More
+          </Button>
+        </Link>
         <Button
           variant="contained"
           sx={{

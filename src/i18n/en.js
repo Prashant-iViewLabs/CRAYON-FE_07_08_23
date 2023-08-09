@@ -55,6 +55,7 @@ const en = {
   },
   talent: {
     searchPlaceholder: "find me this talent...",
+    noData: "No Talent Data Found"
   },
   myJobs: {
     searchPlaceholder: "search my jobs...",
