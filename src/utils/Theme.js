@@ -144,6 +144,7 @@ const theme = createTheme({
     hoverBlue: "#E6EFFF",
     lightText: "#5E6366",
     lightGray: "#D3D3D3",
+    grayBackground: "#f0f0f0",
     grayBorder: "#E0E0E0",
     placeholder: "#C6CACC",
     grayIcon: "#545974",

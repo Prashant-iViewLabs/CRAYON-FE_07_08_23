@@ -3,6 +3,25 @@
     border: 1px solid rgb(197, 197, 197) !important;
 }
 .error-div{
-color:red !important;
-font-size: 0.8rem;
+    color: red !important;
+    font-size: 0.8rem;
+    /* display: flow; */
+    width: -webkit-fill-available;
+    /* background: orange; */
+    /* text-align: end; */
+    align-items: center;
+    display: flex;
+    gap: 5px;
+    margin-right: 5px;
+    justify-content: end;
+}
+
+.custom-input::-webkit-inner-spin-button,
+.custom-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.custom-input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
 }

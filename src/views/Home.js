@@ -144,6 +144,7 @@ export default function Home() {
           spacing={0}
           flexDirection={{ xs: "column", sm: "row" }}
           paddingBottom={1}
+          justifyContent={"center"}
         >
           <Grid
             item
@@ -151,10 +152,10 @@ export default function Home() {
             sm={6}
             lg={7}
             sx={{
-              padding: { sm: "28px 40px", xl: "32px 100px", md: "70px 40px" },
+              padding: { sm: "28px 0", xl: "32px 0", md: "70px 0" },
             }}
           >
-            <Box sx={{ ml: 5, pt: 2 }}>
+            <Box sx={{pt: 2 }}>
               <Typography
                 sx={{
                   //   fontSize: { xs: "32px", sm: "35px", lg:"50px"},
@@ -183,13 +184,14 @@ export default function Home() {
                 variant="contained"
                 color="redButton"
               >
-                {i18n["login.viewPlans"]}
+                {/* {i18n["login.viewPlans"]} */}
+                Learn More
               </Button>
             </Box>
           </Grid>
-          <Grid item xs={12} sm={6} lg={5} sx={{ paddingTop: 3 }}>
+          {/* <Grid item xs={12} sm={6} lg={5} sx={{ paddingTop: 3 }}>
             <Signup />
-          </Grid>
+          </Grid> */}
         </StyledGrid>
       </Grid>
     </Grid>

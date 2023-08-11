@@ -1,6 +1,6 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 
 const steps = [
   {
@@ -24,7 +24,7 @@ const steps = [
 
 export default function VerticalStepper() {
   return (
-    <Grid container display="flex"  margin={"auto"}>
+    <Grid container display="flex" margin={"auto"}>
       <Box style={{ marginLeft: "20px" }}>
         <Grid container sx={{ marginTop: "20px" }}>
           {steps.map((step, index) => (
@@ -64,10 +64,20 @@ export default function VerticalStepper() {
                   {index + 1}
                 </Box>
                 <Box style={{ marginLeft: "15px" }}>
-                  <h3 style={{ color: "#000000", margin: "0" }}>
+                  <Typography sx={{
+                    fontWeight: 700,
+                    fontSize: 16,
+                    letterSpacing: "0.75px",
+                    marginBottom: "8px",
+                  }}>
                     {step.label}
-                  </h3>
-                  <p style={{ marginTop: "0" }}>{step.description}</p>
+                  </Typography>
+                  <Typography sx={{
+                    fontWeight: 400,
+                    fontSize: 14,
+                    letterSpacing: "0.75px",
+                    marginBottom: "8px",
+                  }} >{step.description}</Typography>
                 </Box>
               </Box>
             </Grid>

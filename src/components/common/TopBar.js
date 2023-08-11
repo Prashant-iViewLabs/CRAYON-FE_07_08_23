@@ -16,6 +16,7 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
+import Paper from "@mui/material/Paper";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import {
@@ -283,6 +284,9 @@ export default function TopBar() {
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
+  const toggleForm = () => {
+    setShowLogin(!showLogin);
+  };
   const open = Boolean(anchorEl);
 
   const drawer = (
@@ -473,7 +477,7 @@ export default function TopBar() {
                 </>
               )}
             </div>
-            <Box sx={{ display: { xs: "none", md: "block" } }}>
+            <Box sx={{ display: { xs: "none", md: "flex" } }}>
               {/* {isLoggedIn == true && !isAdmin && userType == 4 && (
                 <IconButton color="redButton">
                   <NotificationsIcon />
@@ -612,15 +616,16 @@ export default function TopBar() {
         show={openLoginDialog}
         hideButton={false}
         onDialogClose={onHandleClose}
-        dialogWidth="sm"
+        dialogWidth="xs"
         showFooter={false}
         title={showLogin ? i18n["login.login"] : i18n["login.signUp"]}
         isApplyJob
+        padding={0}
       >
         {showLogin ? (
-          <Login handleLogin={onHandleLogin} />
+            <Login handleLogin={onHandleLogin} toggleForm={toggleForm}/>
         ) : (
-          <Signup onDialogClose={onHandleClose} />
+          <Signup onDialogClose={onHandleClose} toggleForm={toggleForm}/>
         )}
       </CustomDialog>
     </Box>

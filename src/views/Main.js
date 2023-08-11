@@ -54,7 +54,7 @@ export default function Main() {
           <Box
             sx={{
               paddingTop: "24px",
-              background: theme.palette.mainBackground,
+              background: theme.palette.mainBackground
             }}
           >
             <Outlet />
