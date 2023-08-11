@@ -72,7 +72,7 @@ const JobCardFront = ({
   const getquestions = async () => {
     const { payload } = await dispatch(getAllQuestions(job?.job_id));
     if (payload?.status === "success") {
-      setQuestions(payload.data);
+        setQuestions(payload.data);
     } else {
       dispatch(
         setAlert({
@@ -241,7 +241,7 @@ const JobCardFront = ({
                 sx={{
                   height: "auto",
                   minWidth: 50,
-                  background: "#c9c9c9",
+                  background: theme.palette.grayBackground,
                   borderRadius: 0,
                   padding: 0,
                 }}

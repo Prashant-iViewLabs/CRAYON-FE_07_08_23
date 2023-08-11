@@ -4,7 +4,8 @@ import { truncate } from "lodash";
 
 
 import SmallButton from './SmallButton';
-const Slider2 = ({ items, color, hideTagsAfter}) => {
+import { nanoid } from '@reduxjs/toolkit';
+const Slider2 = ({ items, color, hideTagsAfter }) => {
     const remaining = (value) => {
         const remainingTags = items.slice(value, items.length)
         return remainingTags.join(", ");
@@ -25,6 +26,7 @@ const Slider2 = ({ items, color, hideTagsAfter}) => {
                     if (item !== undefined && index < hideTagsAfter) {
                         return (
                             <SmallButton
+                                key={nanoid()}
                                 color={color}
                                 height={25}
                                 value={item}
@@ -35,6 +37,7 @@ const Slider2 = ({ items, color, hideTagsAfter}) => {
                     } else if (items.length === index + 1) {
                         return (
                             <SmallButton
+                                key={nanoid()}
                                 color={color}
                                 height={25}
                                 value={remaining(hideTagsAfter)}

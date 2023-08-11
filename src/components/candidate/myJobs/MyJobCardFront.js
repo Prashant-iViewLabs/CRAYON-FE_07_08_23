@@ -232,7 +232,7 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
         sx={{
           display: "flex",
           width: "100%",
-          height: "270px",
+          height: "290px",
         }}
       >
         <Grid
@@ -291,7 +291,8 @@ export default function MyJobsCard({ index, job, getJobs, setisFlipped }) {
                   letterSpacing: "0.25px",
                 }}
               >
-                R{formatCurrencyWithCommas(job?.salary?.max)} per month
+                {job?.salary?.currency?.symbol}
+                {formatCurrencyWithCommas(job?.salary?.max)} per month
               </Typography>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

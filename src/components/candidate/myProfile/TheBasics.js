@@ -542,9 +542,9 @@ export default function TheBasics({
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  inputProps={{
-                    placeholder: "dd/mm/yyyy",
-                  }}
+                  // inputProps={{
+                  //   placeholder: "dd/mm/yyyy",
+                  // }}
                   sx={{
                     "& .MuiInputBase-root": {
                       height: "40px",
@@ -693,6 +693,7 @@ export default function TheBasics({
             sx={{ width: "95%", display: "inline-table" }}
             placeholder={i18n["myProfile.nationality"]}
             data={nationalities}
+            disableCloseOnSelect={true}
           ></AutoComplete>
           {getNatiValue() == "" &&
             errors?.find((error) => error.key == "nationality_ids") && (
@@ -725,6 +726,7 @@ export default function TheBasics({
             sx={{ width: "95%", display: "inline-table" }}
             placeholder={i18n["myProfile.language"]}
             data={languages}
+            disableCloseOnSelect={true}
           ></AutoComplete>
           {getLangValue() == "" &&
             errors?.find((error) => error.key == "language_ids") && (

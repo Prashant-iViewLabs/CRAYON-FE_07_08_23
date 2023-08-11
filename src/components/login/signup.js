@@ -344,11 +344,13 @@ import { handleSignState } from "../../redux/signUp/action";
 import PrivacyPolicy from "../../assets/crayon-privacy-policy.pdf";
 import TermsandServices from "../../assets/crayon-terms-of-service.pdf";
 import jwt_decode from "jwt-decode";
-import { Avatar, InputBase } from "@mui/material";
+import { Avatar, DialogTitle, InputBase } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import CancelIcon from '@mui/icons-material/Cancel';
+import Dialog from "@mui/material/Dialog";
+import CloseIcon from "@mui/icons-material/Close";
 
 const FORMDATA = {
   firstName: "",
@@ -373,7 +375,7 @@ const validationSchema = Yup.object().shape({
       "Invalid number"
     ),
 });
-export default function Signup({ onDialogClose, toggleForm }) {
+export default function Signup({onDialogClose, toggleForm, openFunc, closeFunc }) {
   const i18n = locale.en;
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -449,7 +451,7 @@ export default function Signup({ onDialogClose, toggleForm }) {
       try {
         const { payload } = await dispatch(signup(formBody));
         if (payload?.status === "success") {
-          // localStorage.setItem("temp", "temp");
+          localStorage.setItem("temp", "temp");
           setLocalStorage("token", payload?.token);
           // setLocalStorage("isLoggedIn", true);
           // localStorage.setItem("rolID", payload.data.role_id);
@@ -503,270 +505,281 @@ export default function Signup({ onDialogClose, toggleForm }) {
     setShowPassword(!showPassword);
   };
   return (
-    <Box sx={{
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      height: "auto"
-    }}>
-      <Avatar
-        src="/static/images/avatar/1.jpg"
-        sx={{ width: 96, height: 96 }} />
-      <Typography
-        sx={{
-          fontSize: "20px",
-          fontWeight: "bold",
-        }}
-      >
-        hi, let's get you started
-      </Typography>
-      <Typography
-        sx={{
-          fontSize: "16px",
-          marginTop: 3,
-          fontWeight: "bold",
-        }}
-      >
-        Join crayon
-      </Typography>
-      <Typography
-        sx={{
-          fontSize: "14px",
-          fontWeight: 500,
-        }}
-      >
-        select a profile below and complete to join
-      </Typography>
+    <Dialog
+      open={openFunc}
+      // hideButton={false}
+      onDialogClose={closeFunc}
+      dialogWidth="xs"
+      showFooter={false}
+      title={i18n["login.login"]}
+      // isApplyJob
+      padding={0}
+    >
+      <DialogTitle onClose={closeFunc}>
+        <IconButton
+          aria-label="close"
+          onClick={closeFunc}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
       <Box sx={{
-        width: "90%",
         display: "flex",
         flexDirection: "column",
-        mt: 2,
-        gap: 2
+        alignItems: "center",
+        height: "auto",
+        width: "400px",
+        padding: "30px 0 0",
       }}>
+        <Avatar
+          src="/static/images/avatar/1.jpg"
+          sx={{ width: 96, height: 96 }} />
+        <Typography
+          sx={{
+            fontSize: "20px",
+            fontWeight: "bold",
+          }}
+        >
+          hi, let's get you started
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: "16px",
+            marginTop: 3,
+            fontWeight: "bold",
+          }}
+        >
+          Join crayon
+        </Typography>
+        <Typography
+          sx={{
+            fontSize: "14px",
+            fontWeight: 500,
+          }}
+        >
+          select a profile below and complete to join
+        </Typography>
+        <Box sx={{
+          width: "90%",
+          display: "flex",
+          flexDirection: "column",
+          mt: 2,
+          gap: 2
+        }}>
 
-        <Box >
-          <SwipeableButton
-            selectedUser={userType}
-            onButtonToggle={onHandleButtonToggle}
-          />
-        </Box>
-        <Box sx={{ display: "flex" }}>
           <Box >
-            <Paper
-              sx={{
-                display: "flex",
-                borderRadius: "25px",
-                height: "40px",
-                boxShadow: "none",
-                border: `1px solid ${theme.palette.grayBorder}`,
-              }}
-            >
-              <InputBase
-                sx={{ ml: 2, mr: 2, width: "100%" }}
+            <SwipeableButton
+              selectedUser={userType}
+              onButtonToggle={onHandleButtonToggle}
+            />
+          </Box>
+          <Box sx={{ display: "flex", mt: 3 }}>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <InputBox
+                id="firstName"
                 value={formik.values.firstName}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder={i18n["login.firstName"]}
+                sx={{ mr: 1, width: "95%" }}
+                style={{ flex: "1" }}
               />
               {formik.errors.firstName && formik.touched.firstName && (
                 <div className="error-div">{formik.errors.firstName}</div>
               )}
-            </Paper>
-          </Box>
-          <Box >
-            <Paper
-              sx={{
-                display: "flex",
-                height: "40px",
-                borderRadius: "25px",
-                boxShadow: "none",
-                border: `1px solid ${theme.palette.grayBorder}`,
-              }}
-            >
-              <InputBase
-                sx={{ ml: 2, mr: 2, width: "100%" }}
+            </Box>
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <InputBox
+                id="lastName"
                 value={formik.values.lastName}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder={i18n["login.lastName"]}
+                sx={{ ml: 1, width: "95%" }}
                 style={{ flex: "1" }}
               />
               {formik.errors.lastName && formik.touched.lastName && (
                 <div className="error-div">{formik.errors.lastName}</div>
               )}
+            </Box>
+          </Box>
+
+          <Box >
+            <Paper
+              sx={{
+                display: "flex",
+                height: "40px",
+                borderRadius: "25px",
+                boxShadow: "none",
+                border: `1px solid ${theme.palette.grayBorder}`,
+              }}
+            >
+              <InputBase
+                sx={{ ml: 2, mr: 2, width: "100%" }}
+                id="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder={i18n["login.emailAddrees"]}
+                style={{ width: "100%" }}
+              />
+              {formik.errors.email && formik.touched.email && (
+                <span className="error-div">{formik.errors.email} <CancelIcon fontSize="small" /></span>
+              )}
             </Paper>
           </Box>
-        </Box>
-
-        <Box >
-          <Paper
-            sx={{
-              display: "flex",
-              height: "40px",
-              borderRadius: "25px",
-              boxShadow: "none",
-              border: `1px solid ${theme.palette.grayBorder}`,
-            }}
-          >
-            <InputBase
-              sx={{ ml: 2, mr: 2, width: "100%" }}
-              id="email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              placeholder={i18n["login.emailAddrees"]}
-              style={{ width: "100%" }}
-            />
-            {formik.errors.email && formik.touched.email && (
-              <span className="error-div">{formik.errors.email} <CancelIcon fontSize="small" /></span>
-            )}
-          </Paper>
-        </Box>
-        <Box >
-          <Paper
-            sx={{
-              display: "flex",
-              height: "40px",
-              borderRadius: "25px",
-              boxShadow: "none",
-              border: `1px solid ${theme.palette.grayBorder}`,
-            }}
-          >
-            <InputBase
-              sx={{ ml: 2, mr: 2, width: "100%" }}
-              id="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              placeholder={i18n["login.password"]}
-              type={showPassword ? "text" : "password"}
-            />
-            {formik.errors.password && formik.touched.password && (
-              <div className="error-div">{formik.errors.password}</div>
-            )}
-            <IconButton
-              sx={{ py: 0 }}
-              color=""
-              aria-label="reset password"
-              component="button"
-              onClick={handleShowPassword}
-            >
-              {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-            </IconButton>
-          </Paper>
-        </Box>
-        <Box >
-          <Paper
-            sx={{
-              display: "flex",
-              height: "40px",
-              borderRadius: "25px",
-              boxShadow: "none",
-              border: `1px solid ${theme.palette.grayBorder}`,
-            }}
-          >
-            <InputBase
-              sx={{ ml: 2, mr: 2, width: "100%" }}
-              id="contact"
-              value={formik.values.contact}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              placeholder={i18n["login.contact"]}
-              style={{ width: "100%" }}
-              type="number"
-              classes={{
-                input: 'custom-input', // This class name can be used for styling
+          <Box >
+            <Paper
+              sx={{
+                display: "flex",
+                height: "40px",
+                borderRadius: "25px",
+                boxShadow: "none",
+                border: `1px solid ${theme.palette.grayBorder}`,
               }}
-            />
-            {formik.errors.contact && formik.touched.contact && (
-              <span className="error-div">{formik.errors.contact} <CancelIcon fontSize="small" /></span>
-            )}
-          </Paper>
-        </Box>
-        <Box sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 1,
-        }}>
-          <Typography sx={{
-            fontSize: "14px",
-            fontWeight: 500,
+            >
+              <InputBase
+                sx={{ ml: 2, mr: 2, width: "100%" }}
+                id="password"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder={i18n["login.password"]}
+                type={showPassword ? "text" : "password"}
+              />
+              {formik.errors.password && formik.touched.password && (
+                <div className="error-div">{formik.errors.password}</div>
+              )}
+              <IconButton
+                sx={{ py: 0 }}
+                color=""
+                aria-label="reset password"
+                component="button"
+                onClick={handleShowPassword}
+              >
+                {showPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+              </IconButton>
+            </Paper>
+          </Box>
+          <Box >
+            <Paper
+              sx={{
+                display: "flex",
+                height: "40px",
+                borderRadius: "25px",
+                boxShadow: "none",
+                border: `1px solid ${theme.palette.grayBorder}`,
+              }}
+            >
+              <InputBase
+                sx={{ ml: 2, mr: 2, width: "100%" }}
+                id="contact"
+                value={formik.values.contact}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                placeholder={i18n["login.contact"]}
+                style={{ width: "100%" }}
+                type="number"
+                classes={{
+                  input: 'custom-input', // This class name can be used for styling
+                }}
+              />
+              {formik.errors.contact && formik.touched.contact && (
+                <span className="error-div">{formik.errors.contact} <CancelIcon fontSize="small" /></span>
+              )}
+            </Paper>
+          </Box>
+          <Box sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 1,
           }}>
-            Already a user?
-          </Typography>
-          <Link >
             <Typography sx={{
-              color: "black",
               fontSize: "14px",
               fontWeight: 500,
-            }}
-              onClick={toggleForm}>
-              Sign in
+            }}>
+              Already a user?
             </Typography>
-          </Link>
-        </Box>
-        <Box sx={{
-          width: "65%",
-          margin: "auto"
-        }}>
-          <Typography
-            sx={{
-              fontSize: "12px",
-              fontWeight: 400,
-              textAlign: "center"
-            }}
-          >
-            {i18n["login.s1"]}
-            <Link
-              href={PrivacyPolicy}
-              target="_blank"
-              sx={{ textDecoration: "none" }}
+            <Link >
+              <Typography sx={{
+                color: "black",
+                fontSize: "14px",
+                fontWeight: 500,
+              }}
+                onClick={toggleForm}>
+                Sign in
+              </Typography>
+            </Link>
+          </Box>
+          <Box sx={{
+            width: "65%",
+            margin: "auto"
+          }}>
+            <Typography
+              sx={{
+                fontSize: "12px",
+                fontWeight: 400,
+                textAlign: "center"
+              }}
             >
-              {i18n["login.s4"]}
-            </Link>
-            {i18n["login.s3"]}
-            <Link href={TermsandServices} target="_blank">
-              {i18n["login.s2"]}
-            </Link>
-          </Typography>
+              {i18n["login.s1"]}
+              <Link
+                href={PrivacyPolicy}
+                target="_blank"
+                sx={{ textDecoration: "none" }}
+              >
+                {i18n["login.s4"]}
+              </Link>
+              {i18n["login.s3"]}
+              <Link href={TermsandServices} target="_blank">
+                {i18n["login.s2"]}
+              </Link>
+            </Typography>
+          </Box>
+
         </Box>
 
-      </Box>
-
-      <Box
-        sx={{ display: "flex", width: "100%", mt: 2, justifyContent: "space-between" }}
-      >
-
-        <Button
-          sx={{
-            width: "50%",
-            borderRadius: 0,
-            padding: 3
-          }}
-          variant="contained"
-          color="grayButton100"
-        // onClick={(event) => handleLogin(event, loginData)}
-        // onClick={(event) => formik.handleSubmit(event)}
-        // onClick={formik.handleSubmit}
+        <Box
+          sx={{ display: "flex", width: "100%", mt: 2, justifyContent: "space-between" }}
         >
-          forgot Password?
-        </Button>
-        <Button
-          sx={{
-            width: "50%",
-            borderRadius: 0,
-            padding: 3
-          }}
-          variant="contained"
-          color="redButton"
-          onClick={formik.handleSubmit}
-        >
-          {/* {i18n["login.letsGo"]} */}
-          join crayon
-        </Button>
+
+          <Button
+            sx={{
+              width: "50%",
+              borderRadius: 0,
+              padding: 3
+            }}
+            variant="contained"
+            color="grayButton100"
+          // onClick={(event) => handleLogin(event, loginData)}
+          // onClick={(event) => formik.handleSubmit(event)}
+          // onClick={formik.handleSubmit}
+          >
+            forgot Password?
+          </Button>
+          <Button
+            sx={{
+              width: "50%",
+              borderRadius: 0,
+              padding: 3
+            }}
+            variant="contained"
+            color="redButton"
+            onClick={formik.handleSubmit}
+          >
+            {/* {i18n["login.letsGo"]} */}
+            join crayon
+          </Button>
+        </Box>
       </Box>
-    </Box>
+    </Dialog>
+
   );
 }

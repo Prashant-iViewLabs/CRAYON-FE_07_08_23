@@ -235,7 +235,7 @@ const JobCardFront = ({
                 sx={{
                   height: "auto",
                   minWidth: 50,
-                  background: "#c9c9c9",
+                  background: theme.palette.grayBackground,
                   borderRadius: 0,
                   padding: 0,
                 }}

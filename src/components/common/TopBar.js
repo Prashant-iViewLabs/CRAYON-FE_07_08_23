@@ -82,22 +82,24 @@ export default function TopBar() {
   const [activeTab, setActiveTab] = useState(pathname.slice(1));
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openLoginDialog, setOpenLoginDialog] = useState(false);
-  const [showLogin, setShowLogin] = useState(true);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [publicTabs, setPublicTabs] = useState(PUBLIC_TAB_ITEMS);
   const quickLinksButtonRef = useRef(null);
 
   const sign = useSelector((state) => state.sign);
-  const handleLogin = () => {
-    setOpenLoginDialog(true);
-    setShowLogin(true);
-  };
-  const handleSignup = () => {
-    setOpenLoginDialog(true);
-    setShowLogin(false);
-  };
+  // const handleLogin = () => {
+  //   setOpenLoginDialog(true);
+  //   setShowLogin(true);
+  // };
+  // const handleSignup = () => {
+  //   setOpenLoginDialog(true);
+  //   setShowLogin(false);
+  // };
   const onHandleClose = () => {
     setOpenLoginDialog(false);
+    setShowSignup(false);
   };
 
   useEffect(() => {
@@ -177,6 +179,7 @@ export default function TopBar() {
   }, [sign]);
 
   const onHandleLogin = async (loginData) => {
+    setShowLogin(false)
     try {
       const { payload } = await dispatch(login(loginData));
 
@@ -284,8 +287,16 @@ export default function TopBar() {
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
+  const handleCloseLogin = () => {
+    setShowLogin(false);
+  };
+  const handleCloseSignup = () => {
+    setShowSignup(false);
+  };
   const toggleForm = () => {
-    setShowLogin(!showLogin);
+    setShowLogin(prevState => !prevState)
+    setShowSignup(prevState => !prevState);
+
   };
   const open = Boolean(anchorEl);
 
@@ -329,7 +340,7 @@ export default function TopBar() {
                 border: `solid ${theme.palette.redButton.main} 2px`,
                 color: theme.palette.redButton.main,
               }}
-              onClick={handleLogin}
+              onClick={() => setShowLogin(true)}
             >
               {i18n["topBar.login"]}
             </Button>
@@ -339,7 +350,7 @@ export default function TopBar() {
               variant="contained"
               color="redButton"
               sx={{ width: "40%" }}
-              onClick={handleSignup}
+              onClick={() => setShowSignup(true)}
             >
               {i18n["topBar.join"]}
             </Button>
@@ -574,7 +585,7 @@ export default function TopBar() {
                       color: theme.palette.redButton.main,
                     }}
                     color="base"
-                    onClick={handleLogin}
+                    onClick={() => setShowLogin(true)}
                   >
                     {i18n["topBar.login"]}
                   </Button>
@@ -582,7 +593,7 @@ export default function TopBar() {
                     variant="contained"
                     sx={{ width: "96px" }}
                     color="redButton"
-                    onClick={handleSignup}
+                    onClick={() => setShowSignup(true)}
                   >
                     {i18n["topBar.join"]}
                   </Button>
@@ -612,22 +623,12 @@ export default function TopBar() {
           {drawer}
         </Drawer>
       </Box>
-      <CustomDialog
-        show={openLoginDialog}
-        hideButton={false}
-        onDialogClose={onHandleClose}
-        dialogWidth="xs"
-        showFooter={false}
-        title={showLogin ? i18n["login.login"] : i18n["login.signUp"]}
-        isApplyJob
-        padding={0}
-      >
-        {showLogin ? (
-            <Login handleLogin={onHandleLogin} toggleForm={toggleForm}/>
-        ) : (
-          <Signup onDialogClose={onHandleClose} toggleForm={toggleForm}/>
-        )}
-      </CustomDialog>
+        <Login handleLogin={onHandleLogin} openFunc={showLogin}  toggleForm={toggleForm} closeFunc={handleCloseLogin} />
+        <Signup onDialogClose={onHandleClose} toggleForm={toggleForm} openFunc={showSignup} closeFunc={handleCloseSignup}/>
+      {/* {showLogin ? (
+        <Login handleLogin={onHandleLogin} toggleForm={toggleForm} openFunc={handleLogin} closeFunc={onHandleClose}/>
+      ) : (
+      )} */}
     </Box>
   );
 }

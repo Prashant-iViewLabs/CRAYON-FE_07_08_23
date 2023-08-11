@@ -230,7 +230,7 @@ export default function TalentCard({ index, job, setisFlipped }) {
                   // height: "auto",
                   minWidth: 50,
                   height: 43,
-                  background: "#c9c9c9",
+                  background: theme.palette.grayBackground,
                   borderRadius: "0 0 0 8px",
                   padding: 0,
                 }}

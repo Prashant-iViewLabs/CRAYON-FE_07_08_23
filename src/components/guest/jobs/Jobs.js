@@ -962,8 +962,9 @@ export default function Jobs() {
         show={openApplyJobDialog}
         hideButton={false}
         onDialogClose={onHandleClose}
-        dialogWidth="sm"
+        dialogWidth="xs"
         showFooter={false}
+        padding= {0}
         // title={isLoggedIn ? i18n["login.login"] : i18n["login.signUp"]}
         isApplyJob
       >

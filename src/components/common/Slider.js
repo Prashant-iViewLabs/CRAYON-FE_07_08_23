@@ -4,6 +4,7 @@ import SmallButton from './SmallButton';
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import { truncate } from 'lodash';
+import { nanoid } from '@reduxjs/toolkit';
 
 const Slider = ({ items, theme, color }) => {
     return (
@@ -22,6 +23,7 @@ const Slider = ({ items, theme, color }) => {
                     if (item !== undefined) {
                         return (
                             <SmallButton
+                                key={nanoid()}
                                 color={color}
                                 height={25}
                                 value={item}
